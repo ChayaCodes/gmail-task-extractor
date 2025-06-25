@@ -5,7 +5,7 @@ console.log('Content script loaded');
 function init() {
     console.log('InboxSDK initializing...');
     
-    const appId = 'sdk_email-to-task_8bfd604b40';  // החלף עם המפתח האמיתי שלך
+    const appId = 'sdk_email-to-task_8bfd604b40'; 
     
     InboxSDK.load(2, appId).then((sdk) => {
         console.log('InboxSDK loaded successfully');

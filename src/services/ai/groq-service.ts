@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AITaskModel } from '../../interfaces/ai-model.interface';
+import { AIModel } from '../../interfaces/ai-model.interface';
 
 export class GroqService {
     private apiUrl: string;
@@ -8,7 +8,7 @@ export class GroqService {
         this.apiUrl = apiUrl;
     }
 
-    public async sendPrompt(prompt: string): Promise<AITaskModel[]> {
+    public async sendPrompt(prompt: string): Promise<AIModel[]> {
         try {
             const response = await axios.post(this.apiUrl, { prompt });
             return response.data.tasks;

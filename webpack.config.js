@@ -12,6 +12,8 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         environment: {
             dynamicImport: false,
+            arrowFunction: true,  
+            destructuring: true,  
         }
     },
     devtool: false,
@@ -21,14 +23,22 @@ module.exports = {
     optimization: {
         minimize: true,
         minimizer: [
-            '...', 
-        ]
+            '...' 
+        ],
+        moduleIds: 'deterministic',  
     },
     module: {
         rules: [
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
+                use: {
+                    loader: 'ts-loader',
+                    options: {
+                        compilerOptions: {
+                            target: "es2015"
+                        }
+                    }
+                },
                 exclude: /node_modules/,
             },
         ],

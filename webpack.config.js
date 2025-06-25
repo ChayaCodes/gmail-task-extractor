@@ -1,0 +1,31 @@
+const path = require('path');
+
+module.exports = {
+    mode: 'development',
+    entry: {
+        background: './src/background/background.ts',
+        content: './src/content/main.ts',
+    },
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist'),
+    },
+    resolve: {
+        extensions: ['.ts', '.js'],
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    devtool: 'source-map',
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
+};

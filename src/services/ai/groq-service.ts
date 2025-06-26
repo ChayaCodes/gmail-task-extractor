@@ -10,7 +10,6 @@ export class GroqService implements EventExtractor {
 
   async getEventSuggestions(emailDetails: EmailDetails): Promise<Event[]> {
     try {
-      // יצירת הודעות בפורמט של chat completions
       const messages = [
         {
           role: "system",
@@ -30,23 +29,24 @@ Return a JSON array of events with this exact structure:
 [
   {
     "title": "Event title",
-    "description": "Detailed description",
+    "description": "Detailed description, all relevant information",
     "startDate": "YYYY-MM-DD", 
     "startTime": "HH:MM",
     "endDate": "YYYY-MM-DD",
     "endTime": "HH:MM",
-    "location": "Optional location"
-  }
+    "location": "Optional location, if online, specify 'Online' and link if available",
+  }, 
+  ...
+    
 ]
 
 If no events are found, return an empty array: []`,
         },
       ];
 
-      // שליחת הבקשה ל-API
+      console.log("Sending request to Groq API for event extraction...", messages);
       const response = await this.sendChatRequest(messages);
 
-      // עיבוד התשובה
       return this.parseResponse(response);
     } catch (error) {
       console.error("Error extracting events:", error);

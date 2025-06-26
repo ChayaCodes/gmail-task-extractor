@@ -1,8 +1,8 @@
 import * as InboxSDK from "@inboxsdk/core";
-import { EmailDetails } from "../types/email.types";
+import { EmailDetails } from "/src/types/email.types";
 
 export interface MessageActionHandlers {
-  onOpenMessage: (EmailDetails: EmailDetails) => void;
+  onOpenMessage: (emailDetails: EmailDetails, messageView: any) => void;
 }
 
 export class InboxSDKService {
@@ -26,7 +26,7 @@ export class InboxSDKService {
   }
 
   // רישום מאזינים למייל ולחיצה על כפתורים
-  registerMessageHandlers(handlers: MessageActionHandlers): void {
+  public registerMessageHandlers(handlers: MessageActionHandlers): void {
     if (!this.sdk) {
       console.error("InboxSDK not initialized");
       return;
@@ -34,7 +34,7 @@ export class InboxSDKService {
 
     this.sdk.Conversations.registerMessageViewHandler((messageView: any) => {
       const emailDetails = this.extractEmailDetails(messageView);
-      handlers.onOpenMessage(emailDetails);
+      handlers.onOpenMessage(emailDetails, messageView);
     });
   }
 

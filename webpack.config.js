@@ -19,19 +19,20 @@ module.exports = {
     },
     devtool: false,
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        alias: {
+            '/src': path.resolve(__dirname, 'src')
+        }
     },
     optimization: {
         minimize: true,
-        minimizer: [
-            '...' 
-        ],
-        moduleIds: 'deterministic',  
+        minimizer: ['...'],
+        moduleIds: 'deterministic',
     },
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.tsx?$/, 
                 use: {
                     loader: 'ts-loader',
                     options: {
@@ -42,20 +43,21 @@ module.exports = {
                 },
                 exclude: /node_modules/,
             },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
         ],
     },
     plugins: [
         new CopyPlugin({
             patterns: [
                 { from: 'public', to: '' },
-                { 
-                    from: 'node_modules/@inboxsdk/core/pageWorld.js',
-                    to: 'pageWorld.js'
-                }
+                { from: 'node_modules/@inboxsdk/core/pageWorld.js', to: 'pageWorld.js' }
             ],
         }),
         new Dotenv({
-            systemvars: true // טען גם משתני מערכת
+            systemvars: true
         })
     ],
 };

@@ -1,0 +1,76 @@
+.event-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  position: sticky;
+  bottom: 0;
+}
+
+.approve-button,
+.reject-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.approve-button {
+  background-color: #1a73e8;
+  color: white;
+  flex-grow: 2;
+  margin-right: 8px;
+}
+
+.approve-button:hover {
+  background-color: #1765cc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.approve-button:active {
+  background-color: #1559b2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.reject-button {
+  background-color: #ffffff;
+  color: #5f6368;
+  border: 1px solid #dadce0;
+}
+
+.reject-button:hover {
+  background-color: #f1f3f4;
+  color: #202124;
+}
+
+.reject-button:active {
+  background-color: #e8eaed;
+}
+
+/* כאשר כפתור מושבת */
+.approve-button:disabled,
+.reject-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* סגנון נוסף לצורך טעינה */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

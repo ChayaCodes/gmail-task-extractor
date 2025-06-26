@@ -1,0 +1,82 @@
+.event-form {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #202124;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #202124;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #1a73e8;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.date-time-group {
+  flex: 1;
+}
+
+input[type="date"],
+input[type="time"] {
+  direction: ltr;
+  text-align: right;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  margin-left: 0;
+  margin-right: 4px;
+}
+
+/* כשהשדה לא תקין */
+.form-group input.invalid,
+.form-group textarea.invalid {
+  border-color: #d93025;
+}
+
+.error-message {
+  color: #d93025;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* הנחיות בשדות */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #9aa0a6;
+  opacity: 1;
+}

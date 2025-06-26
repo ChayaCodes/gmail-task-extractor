@@ -6,7 +6,7 @@ import { Event } from '../types/event.types';
 
 // Application configuration
 const CONFIG = {
-  appId: 'sdk_email-to-task_8bfd604b40',
+  appId: process.env.INBOX_SDK_APP_ID || 'your-app-id',
   enableDebugMode: true,
   processAllEmails: true
 };
@@ -68,10 +68,8 @@ async function processEmailForEvents(emailDetails: EmailDetails): Promise<void> 
   try {
     console.log(`Processing email for events: ${emailDetails.subject}`);
     
-    // Extract events from email
     const events = await services.groq.getEventSuggestions(emailDetails);
     
-    // Handle extraction results
     handleExtractedEvents(events, emailDetails);
   } catch (error) {
     console.error(`Failed to process email for events`, error);
@@ -86,7 +84,6 @@ function handleExtractedEvents(events: Event[], emailDetails: EmailDetails): voi
   
   console.log(`Found ${events.length} events in email: ${emailDetails.subject}`);
   
-  // Log each event found
   events.forEach((event, index) => {
     console.log(`Event ${index + 1}: ${event.title}`, {
       date: `${event.startDate} (${event.startTime} - ${event.endTime})`,
@@ -95,7 +92,6 @@ function handleExtractedEvents(events: Event[], emailDetails: EmailDetails): voi
   });
 }
 
-// Start the application
 bootstrap().catch(error => {
   console.error('Fatal application error', error);
 });

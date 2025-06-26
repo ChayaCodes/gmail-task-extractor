@@ -10,5 +10,4 @@ export interface CalendarEvent {
 
 export interface CalendarService {
   addEvent(event: CalendarEvent): Promise<string>;
-  isAuthenticated(): Promise<boolean>;
 }

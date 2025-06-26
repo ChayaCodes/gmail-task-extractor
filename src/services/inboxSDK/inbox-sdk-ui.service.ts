@@ -4,6 +4,7 @@ import { EventSidebar } from "/src/ui/components/events/EventSidebar";
 
 export class InboxSDKUIService {
   private currentSidebarPanel: any = null;
+  private currentSidebarElement: HTMLElement | null = null; 
 
   public showEventSidebar(
     events: Event[],
@@ -18,6 +19,7 @@ export class InboxSDKUIService {
 
     const sidebarEl = document.createElement("div");
     sidebarEl.className = "event-sidebar-container";
+    this.currentSidebarElement = sidebarEl; 
 
     this.currentSidebarPanel = messageView.getThreadView().addSidebarContentPanel({
       el: sidebarEl,
@@ -40,13 +42,13 @@ export class InboxSDKUIService {
 
   public closeCurrentSidebar(): void {
     if (this.currentSidebarPanel) {
-      const container = this.currentSidebarPanel.getElement();
-      if (container) {
-        render(null, container);
+      if (this.currentSidebarElement) {
+        render(null, this.currentSidebarElement);
+        this.currentSidebarElement = null;
       }
-
       this.currentSidebarPanel.destroy();
       this.currentSidebarPanel = null;
     }
   }
 }
+// filepath: d:\Users\user\projects\gmail-task-extractor\src\services\inboxSDK\inbox-sdk-ui.service.ts

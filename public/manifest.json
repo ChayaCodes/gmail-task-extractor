@@ -1,6 +1,5 @@
 {
   "manifest_version": 3,
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxIQu4hJgdIvGfaeJNzr6Rx2XA7Pfb1Lqg+QYVj/AAr6cMxJCnDzVKvUPe45VPXbLwfcB4O3qBJlSRdbTrd9HvNczbMY0tkMtBfGIOMqp9XxkEtr7Nm1zdGSldh1kIjJX4QlVajISluVXrCc3l4lZ4aqlrcsBGyVJSEDIFflYuBTJU/UGN6xPCg3Bz2vVPTnygOhFhOpXjKf6zCQgL9t5BrbRIEzGEjKaIiSxX0AW1ZxToiBTL5BiVID6e6loCRIEebRCkNvY30woyEbrmqw5nf/fpJxPbXToaKEl4CZEaqkeuH4Z/qtNej2sdB8d2K/Ip/UhtQl/V8lOo2TRddP41wIDAQAB",
   "name": "Gmail Task Extractor",
   "version": "1.0.0",
   "description": "Extract tasks from Gmail emails",
@@ -29,7 +28,8 @@
   ],
   "permissions": [
     "storage",
-    "scripting"
+    "scripting",
+    "identity"
   ],
     
   "web_accessible_resources": [
@@ -37,5 +37,13 @@
       "resources": ["*.js", "pageWorld.js", "*.html", "*.css", "*.json"],
       "matches": ["*://mail.google.com/*", "*://*.googleusercontent.com/*"]
     }
-  ]
+  ],
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxIQu4hJgdIvGfaeJNzr6Rx2XA7Pfb1Lqg+QYVj/AAr6cMxJCnDzVKvUPe45VPXbLwfcB4O3qBJlSRdbTrd9HvNczbMY0tkMtBfGIOMqp9XxkEtr7Nm1zdGSldh1kIjJX4QlVajISluVXrCc3l4lZ4aqlrcsBGyVJSEDIFflYuBTJU/UGN6xPCg3Bz2vVPTnygOhFhOpXjKf6zCQgL9t5BrbRIEzGEjKaIiSxX0AW1ZxToiBTL5BiVID6e6loCRIEebRCkNvY30woyEbrmqw5nf/fpJxPbXToaKEl4CZEaqkeuH4Z/qtNej2sdB8d2K/Ip/UhtQl/V8lOo2TRddP41wIDAQAB",
+  "oauth2": {
+    "client_id": "343026498715-99u83kov0hhv2olft8bfudeci7qqfg04.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/gmail.readonly",
+      "https://www.googleapis.com/auth/calendar"
+    ]
+  }
 }

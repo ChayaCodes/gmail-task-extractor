@@ -4,6 +4,9 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest'
   },
+  moduleNameMapper: {
+    '^/src/(.*)$': '<rootDir>/src/$1'
+  },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testMatch: [
     '**/tests/**/*.spec.ts',

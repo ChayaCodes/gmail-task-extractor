@@ -4,6 +4,8 @@ import { GroqService } from '/src/services/ai/groq-service';
 import { InboxSDKUIService } from '/src/services/inboxSDK/inbox-sdk-ui.service';
 import { EmailDetails } from '/src/types/email.types';
 import { Event } from '/src/types/event.types';
+import { GoogleCalendar } from '/src/services/calendar/google-calendar';
+import { CalendarEvent } from '/src/interfaces/calendar.interface';
 
 // Application configuration
 const CONFIG = {
@@ -15,12 +17,12 @@ const CONFIG = {
 const services = {
   inboxSDK: null as InboxSDKService | null,
   groq: null as GroqService | null,
-  uiService: new InboxSDKUIService()
+  uiService: new InboxSDKUIService(),
+  calendar: new GoogleCalendar()
 };
 
 async function bootstrap(): Promise<void> {
   console.log('Gmail Event Extractor starting...');
-  
   try {
     await initializeServices();
     registerEventHandlers();
@@ -32,7 +34,6 @@ async function bootstrap(): Promise<void> {
 async function initializeServices(): Promise<void> {
   services.inboxSDK = new InboxSDKService(CONFIG.appId);
   await services.inboxSDK.initialize();
-  
   services.groq = new GroqService();
 }
 
@@ -41,18 +42,13 @@ function registerEventHandlers(): void {
     console.error('Cannot register handlers - InboxSDK not initialized');
     return;
   }
-  
-  // Register email open handler
   services.inboxSDK.registerMessageHandlers({
     onOpenMessage: handleEmailOpened
   });
 }
 
 async function handleEmailOpened(emailDetails: EmailDetails, messageView: any): Promise<void> {
-  console.log(`Email opened: "${emailDetails.subject}"`, { 
-    sender: emailDetails.senderEmail 
-  });
-  
+  console.log(`Email opened: `, emailDetails);  
   await processEmailForEvents(emailDetails, messageView);
   
 }
@@ -62,12 +58,9 @@ async function processEmailForEvents(emailDetails: EmailDetails, messageView: an
     console.error('Cannot process email - Groq service not initialized');
     return;
   }
-  
   try {
     console.log(`Processing email for events: ${emailDetails.subject}`);
-    
     const events = await services.groq.getEventSuggestions(emailDetails);
-    
     handleExtractedEvents(events, emailDetails, messageView);
   } catch (error) {
     console.error(`Failed to process email for events`, error);
@@ -79,29 +72,52 @@ function handleExtractedEvents(events: Event[], emailDetails: EmailDetails, mess
     console.log(`No events found in email: ${emailDetails.subject}`);
     return;
   }
-  
   console.log(`Found ${events.length} events in email: ${emailDetails.subject}`);
-  
   events.forEach((event, index) => {
-    console.log(`Event ${index + 1}: ${event.title}`, {
-      date: `${event.startDate} (${event.startTime} - ${event.endTime})`,
-      location: event.location || 'No location'
-    });
+    logEventDetails(event, index);
   });
-  
+  showEventSidebar(events, messageView);
+}
+
+function logEventDetails(event: Event, index: number): void {
+  console.log(`Event ${index + 1}: ${event.title}`, {
+    date: `${event.startDate} (${event.startTime} - ${event.endTime})`,
+    location: event.location || 'No location'
+  });
+}
+
+function showEventSidebar(events: Event[], messageView: any): void {
   services.uiService.showEventSidebar(events, messageView, {
-    onEventUpdate: (event) => {
-      console.log('Event updated:', event);
-    },
-    onEventApprove: (event) => {
-      console.log('Event approved:', event);
-      
-      services.uiService.closeCurrentSidebar();
-    },
-    onEventReject: (event) => {
-      console.log('Event rejected:', event);
-    }
+    onEventUpdate: handleEventUpdate,
+    onEventApprove: handleEventApprove,
+    onEventReject: handleEventReject
   });
+}
+
+function handleEventUpdate(event: Event): void {
+  console.log('Event updated:', event);
+}
+
+async function handleEventApprove(event: Event): Promise<void> {
+  console.log('Event approved:', event);
+  try {
+    const calendarEvent: CalendarEvent = {
+      title: event.title,
+      description: event.description,
+      start: new Date(`${event.startDate}T${event.startTime}`),
+      end: new Date(`${event.endDate}T${event.endTime}`),
+      location: event.location,
+    };
+    const eventId = await services.calendar.addEvent(calendarEvent);
+    console.log('Event added to Google Calendar, id:', eventId);
+  } catch (err) {
+    console.error('Failed to add event to Google Calendar', err);
+  }
+  services.uiService.closeCurrentSidebar();
+}
+
+function handleEventReject(event: Event): void {
+  console.log('Event rejected:', event);
 }
 
 bootstrap().catch(error => {

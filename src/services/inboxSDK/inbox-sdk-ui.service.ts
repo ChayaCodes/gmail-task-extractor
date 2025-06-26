@@ -19,7 +19,7 @@ export class InboxSDKUIService {
     const sidebarEl = document.createElement("div");
     sidebarEl.className = "event-sidebar-container";
 
-    this.currentSidebarPanel = messageView.addSidebarPanel({
+    this.currentSidebarPanel = messageView.getThreadView().addSidebarContentPanel({
       el: sidebarEl,
       title: "Tasks",
       iconUrl: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png',

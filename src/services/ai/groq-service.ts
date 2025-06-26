@@ -1,20 +1,114 @@
-import axios from 'axios';
-import { EventExtractor } from '../../interfaces/event-extractor.interface';
+import axios from "axios";
+import { EventExtractor } from "../../interfaces/event-extractor.interface";
+import { EmailDetails } from "../../types/email.types";
+import { Event } from "../../types/event.types";
 
-export class GroqService {
-    private apiUrl: string;
+export class GroqService implements EventExtractor {
+  private apiUrl = "https://api.groq.com/openai/v1/chat/completions";
+  private apiKey = process.env.GROQ_API_KEY;
+  private model = "llama3-8b-8192";
 
-    constructor(apiUrl: string) {
-        this.apiUrl = apiUrl;
+  async getEventSuggestions(emailDetails: EmailDetails): Promise<Event[]> {
+    try {
+      // יצירת הודעות בפורמט של chat completions
+      const messages = [
+        {
+          role: "system",
+          content:
+            "You are an AI assistant that extracts events from email content. Extract all possible events including meetings, appointments, and deadlines.",
+        },
+        {
+          role: "user",
+          content: `Extract events from the following email:
+            
+From: ${emailDetails.senderName} (${emailDetails.senderEmail})
+Date: ${emailDetails.dateTime}
+Subject: ${emailDetails.subject}
+Body: ${emailDetails.body}
+
+Return a JSON array of events with this exact structure:
+[
+  {
+    "title": "Event title",
+    "description": "Detailed description",
+    "startDate": "YYYY-MM-DD", 
+    "startTime": "HH:MM",
+    "endDate": "YYYY-MM-DD",
+    "endTime": "HH:MM",
+    "location": "Optional location"
+  }
+]
+
+If no events are found, return an empty array: []`,
+        },
+      ];
+
+      // שליחת הבקשה ל-API
+      const response = await this.sendChatRequest(messages);
+
+      // עיבוד התשובה
+      return this.parseResponse(response);
+    } catch (error) {
+      console.error("Error extracting events:", error);
+      return [];
     }
+  }
 
-    public async sendPrompt(prompt: string): Promise<EventExtractor[]> {
-        try {
-            const response = await axios.post(this.apiUrl, { prompt });
-            return response.data.tasks;
-        } catch (error) {
-            console.error('Error sending prompt to GROQ API:', error);
-            throw new Error('Failed to retrieve tasks from AI model');
-        }
+  private async sendChatRequest(messages: any[]): Promise<string> {
+    try {
+      console.log("Sending request to Groq API...");
+
+      const headers = {
+        Authorization: `Bearer ${this.apiKey}`,
+        "Content-Type": "application/json",
+      };
+
+      const data = {
+        model: this.model,
+        messages: messages,
+        response_format: { type: "json_object" },
+      };
+
+      const response = await axios.post(this.apiUrl, data, { headers });
+
+      console.log("Groq API response received");
+      return response.data.choices[0].message.content;
+    } catch (error) {
+      console.error("Error communicating with Groq API:", error);
+      throw new Error("Failed to communicate with AI model");
     }
+  }
+
+  private parseResponse(responseContent: string): Event[] {
+    try {
+      let events: any[];
+
+      if (typeof responseContent === "string") {
+        const parsedResponse = JSON.parse(responseContent);
+
+        events = Array.isArray(parsedResponse)
+          ? parsedResponse
+          : parsedResponse.events || [];
+      } else {
+        events = responseContent;
+      }
+
+      return events.map((event) => ({
+        title: event.title || "Untitled Event",
+        description: event.description || "",
+        startDate: event.startDate || new Date().toISOString().split("T")[0],
+        startTime: event.startTime || "09:00",
+        endDate:
+          event.endDate ||
+          event.startDate ||
+          new Date().toISOString().split("T")[0],
+        endTime: event.endTime || "10:00",
+        location: event.location || "",
+        status: "suggested",
+      }));
+    } catch (error) {
+      console.error("Error parsing AI response:", error);
+      return [];
+    }
+  }
 }

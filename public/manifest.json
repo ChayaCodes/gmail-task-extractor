@@ -15,7 +15,7 @@
     {
       "matches": ["*://mail.google.com/*"],
       "js": ["content.bundle.js"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "background": {
@@ -28,15 +28,12 @@
   ],
   "permissions": [
     "storage",
-    "contextMenus",
-    "tabs",
-    "activeTab",
     "scripting"
   ],
     
   "web_accessible_resources": [
     {
-      "resources": ["*.js", "*.html", "*.css", "*.json"],
+      "resources": ["*.js", "pageWorld.js", "*.html", "*.css", "*.json"],
       "matches": ["*://mail.google.com/*", "*://*.googleusercontent.com/*"]
     }
   ]

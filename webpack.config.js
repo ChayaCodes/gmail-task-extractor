@@ -47,6 +47,10 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: 'public', to: '' },
+                { 
+                    from: 'node_modules/@inboxsdk/core/pageWorld.js',
+                    to: 'pageWorld.js'
+                }
             ],
         }),
     ],

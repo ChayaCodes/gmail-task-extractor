@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AIModel } from '../../interfaces/ai-model.interface';
+import { EventExtractor } from '../../interfaces/event-extractor.interface';
 
 export class GroqService {
     private apiUrl: string;
@@ -8,7 +8,7 @@ export class GroqService {
         this.apiUrl = apiUrl;
     }
 
-    public async sendPrompt(prompt: string): Promise<AIModel[]> {
+    public async sendPrompt(prompt: string): Promise<EventExtractor[]> {
         try {
             const response = await axios.post(this.apiUrl, { prompt });
             return response.data.tasks;

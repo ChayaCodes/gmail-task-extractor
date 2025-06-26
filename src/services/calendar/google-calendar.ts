@@ -1,7 +1,10 @@
 import { CalendarEvent, CalendarService } from '../../interfaces/calendar.interface';
 
 export class GoogleCalendar implements CalendarService {
-    addEvent(event: CalendarEvent): Promise<void> {
+    isAuthenticated(): Promise<boolean> {
+        throw new Error('Method not implemented.');
+    }
+    addEvent(event: CalendarEvent): Promise<string> {
         throw new Error('Method not implemented.');
     }
     updateEvent(eventId: string, updatedEvent: CalendarEvent): Promise<void> {

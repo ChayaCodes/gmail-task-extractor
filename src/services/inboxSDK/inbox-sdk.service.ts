@@ -51,4 +51,8 @@ export class InboxSDKService {
       body: bodyElement ? bodyElement.textContent || '' : ''
     };
   }
+
+  public getSdk() {
+    return this.sdk;
+  }
 }

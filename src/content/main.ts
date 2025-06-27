@@ -16,7 +16,7 @@ const CONFIG = {
 const services = {
   inboxSDK: null as InboxSDKService | null,
   groq: null as GroqService | null,
-  uiService: new InboxSDKUIService(),
+  uiService: null as InboxSDKUIService | null,
   calendar: new GoogleCalendar()
 };
 
@@ -34,6 +34,7 @@ async function initializeServices(): Promise<void> {
   services.inboxSDK = new InboxSDKService(CONFIG.appId);
   await services.inboxSDK.initialize();
   services.groq = new GroqService();
+  services.uiService = new InboxSDKUIService(services.inboxSDK);
 }
 
 function registerEventHandlers(): void {
@@ -52,16 +53,40 @@ async function handleEmailOpened(emailDetails: EmailDetails, messageView: any): 
 
 }
 
+function showSuccessNotification(message: string) {
+  services.uiService?.showNotification(message, { type: 'success', timeout: 7000 });
+}
+
+function showErrorNotification(message: string) {
+  services.uiService?.showNotification(message, { type: 'error', timeout: 7000 });
+}
+
+async function handleEventApprove(event: Event): Promise<void> {
+  console.log('Event approved:', event);
+  try {
+    const eventId = await services.calendar.addEvent(event);
+    services.uiService?.closeCurrentSidebar();
+    showSuccessNotification('האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.');
+    // אם תרצי להציג קישור, אפשר להוסיף אותו לטקסט בלבד:
+    // showSuccessNotification(`האירוע נוסף בהצלחה! חפש אותו ביומן Google שלך (ID: ${eventId})`);
+  } catch (error: any) {
+    showErrorNotification('אירעה שגיאה בהוספת האירוע ליומן: ' + (error?.message || ''));
+  }
+}
+
 async function processEmailForEvents(emailDetails: EmailDetails, messageView: any): Promise<void> {
   if (!services.groq) {
     console.error('Cannot process email - Groq service not initialized');
+    showErrorNotification('Cannot process email - Groq service not initialized');
+
     return;
   }
   try {
     console.log(`Processing email for events: ${emailDetails.subject}`);
     const events = await services.groq.getEventSuggestions(emailDetails);
     handleExtractedEvents(events, emailDetails, messageView);
-  } catch (error) {
+  } catch (error: any) {
+    showErrorNotification('אירעה שגיאה בתקשורת עם שירות הבינה המלאכותית: ' + (error?.message || ''));
     console.error(`Failed to process email for events`, error);
   }
 }
@@ -89,6 +114,10 @@ function logEventDetails(event: Event, index: number): void {
 }
 
 function showEventSidebar(events: Event[], messageView: any): void {
+  if (!services.uiService) {
+    console.error('Cannot show event sidebar - UI service not initialized');
+    return;
+  }
   services.uiService.showEventSidebar(events, messageView, {
     onEventUpdate: handleEventUpdate,
     onEventApprove: handleEventApprove,
@@ -98,12 +127,6 @@ function showEventSidebar(events: Event[], messageView: any): void {
 
 function handleEventUpdate(event: Event): void {
   console.log('Event updated:', event);
-}
-
-async function handleEventApprove(event: Event): Promise<void> {
-  console.log('Event approved:', event);
-
-  await services.calendar.addEvent(event);
 }
 
 async function handleEventReject(event: Event): Promise<void> {

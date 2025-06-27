@@ -1,10 +1,15 @@
 import { h, render } from "preact";
 import { Event } from "/src/types/event.types";
 import { EventSidebar } from "/src/ui/components/events/EventSidebar";
+import * as InboxSDK from "@inboxsdk/core";
 
 export class InboxSDKUIService {
   private currentSidebarPanel: any = null;
-  private currentSidebarElement: HTMLElement | null = null;
+  private sdk: any;
+
+  constructor(inboxSdkService: any) {
+    this.sdk = inboxSdkService.getSdk();
+  }
 
   public showEventSidebar(
     events: Event[],
@@ -18,7 +23,6 @@ export class InboxSDKUIService {
     this.closeCurrentSidebar();
 
     const sidebarEl = document.createElement("div");
-    this.currentSidebarElement = sidebarEl;
 
     this.currentSidebarPanel = messageView.getThreadView().addSidebarContentPanel({
       el: sidebarEl,
@@ -44,6 +48,23 @@ export class InboxSDKUIService {
     if (this.currentSidebarPanel) {
       this.currentSidebarPanel.remove();
 
+    }
+  }
+
+  public showNotification(
+    message: string,
+    options: {
+      type?: "info" | "success" | "error";
+      timeout?: number;
+    } = { type: "info", timeout: 5000 }
+  ): void {
+    if (!this.sdk) {
+      return;
+    }
+    if (options.type === "error") {
+      this.sdk.ButterBar.showError({ text: message, time: options.timeout });
+    } else {
+      this.sdk.ButterBar.showMessage({ text: message, time: options.timeout });
     }
   }
 }

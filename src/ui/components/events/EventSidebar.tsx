@@ -120,7 +120,7 @@ export function EventSidebar({
           <EventActions onApprove={handleApprove} onReject={handleReject} />
 
           {/* הודעות שגיאה וטעינה בתחתית */}
-          <div style={{ minHeight: 32, marginTop: 8 }}>
+          <div >
             {errorMsg && (
               <div className="event-error-msg">{errorMsg}</div>
             )}

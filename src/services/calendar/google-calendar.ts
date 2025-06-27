@@ -44,7 +44,6 @@ export class GoogleCalendar implements CalendarService {
         }
 
         const data = await response.json();
-        console.log('Event added to Google Calendar:', data);
         return data.id;
     }
 }

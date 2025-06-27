@@ -15,12 +15,9 @@ export class InboxSDKService {
 
   async initialize(): Promise<void> {
     try {
-      console.log("Loading InboxSDK...");
       this.sdk = await InboxSDK.load(2, this.appId);
-      console.log("InboxSDK loaded successfully");
       return Promise.resolve();
     } catch (error) {
-      console.error("Failed to load InboxSDK:", error);
       return Promise.reject(error);
     }
   }

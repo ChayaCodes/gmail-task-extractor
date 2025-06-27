@@ -28,7 +28,7 @@ export class GroqService implements EventExtractor {
     return the event in the same language of the email.
 
     Include all the details you can find in the email, such as date, time, location, and a long, detailed description. 
-    If the email contains multiple events, extract each one in seperate object in one array.
+    If the email contains multiple events, Or are there several dates for the event, extract each one in seperate object in one array.
 
 
     Return a JSON array of events with this exact structure:
@@ -50,19 +50,16 @@ export class GroqService implements EventExtractor {
         },
       ];
 
-      console.log("Sending request to Groq API for event extraction...", messages);
       const response = await this.sendChatRequest(messages);
 
       return this.parseResponse(response);
     } catch (error) {
-      console.error("Error extracting events:", error);
       return [];
     }
   }
 
   private async sendChatRequest(messages: any[]): Promise<string> {
     try {
-      console.log("Sending request to Groq API...");
 
       const headers = {
         Authorization: `Bearer ${this.apiKey}`,
@@ -77,10 +74,8 @@ export class GroqService implements EventExtractor {
 
       const response = await axios.post(this.apiUrl, data, { headers });
 
-      console.log("Groq API response received");
       return response.data.choices[0].message.content;
     } catch (error) {
-      console.error("Error communicating with Groq API:", error);
       throw new Error("Failed to communicate with AI model");
     }
   }

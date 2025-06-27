@@ -22,7 +22,6 @@ const services = {
 };
 
 async function bootstrap(): Promise<void> {
-  console.log('Gmail Event Extractor starting...');
   try {
     await initializeServices();
     registerEventHandlers();
@@ -48,7 +47,6 @@ function registerEventHandlers(): void {
 }
 
 async function handleEmailOpened(emailDetails: EmailDetails, messageView: any): Promise<void> {
-  console.log(`Email opened: `, emailDetails);
   await processEmailForEvents(emailDetails, messageView);
 
 }
@@ -59,7 +57,6 @@ async function processEmailForEvents(emailDetails: EmailDetails, messageView: an
     return;
   }
   try {
-    console.log(`Processing email for events: ${emailDetails.subject}`);
     const events = await services.groq.getEventSuggestions(emailDetails);
     handleExtractedEvents(events, emailDetails, messageView);
   } catch (error) {
@@ -69,12 +66,10 @@ async function processEmailForEvents(emailDetails: EmailDetails, messageView: an
 
 function handleExtractedEvents(events: Event[], emailDetails: EmailDetails, messageView: any): void {
   if (events.length === 0) {
-    console.log(`No events found in email: ${emailDetails.subject}`);
     return;
   }
   const threadId = messageView?.getThreadView()?.getThreadID();
   const mailLink = threadId ? `https://mail.google.com/mail/u/0/#inbox/${threadId}` : '';
-  console.log(`Found ${events.length} events in email: ${emailDetails.subject}`);
   events.forEach((event, index) => {
     logEventDetails(event, index);
   });
@@ -98,11 +93,9 @@ function showEventSidebar(events: Event[], messageView: any): void {
 }
 
 function handleEventUpdate(event: Event): void {
-  console.log('Event updated:', event);
 }
 
 async function handleEventApprove(event: Event): Promise<void> {
-  console.log('Event approved:', event);
   const calendarEvent: CalendarEvent = {
     title: event.title,
     description: event.description +
@@ -115,8 +108,8 @@ async function handleEventApprove(event: Event): Promise<void> {
 }
 
 async function handleEventReject(event: Event): Promise<void> {
-  console.log('Event rejected:', event);
   // אפשר להוסיף לוגיקה אם צריך
+  console.log(`Event rejected: ${event.title}`);
 }
 
 bootstrap().catch(error => {

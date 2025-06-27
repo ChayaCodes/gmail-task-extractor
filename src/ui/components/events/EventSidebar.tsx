@@ -53,14 +53,23 @@ export function EventSidebar({
     setEditedEvent({ ...emptyEvent });
   };
 
+  function goToNextOrClose() {
+    if (events.length > 1 && activeEventIndex < events.length - 1) {
+      setActiveEventIndex(activeEventIndex + 1);
+      setEditedEvent({ ...events[activeEventIndex + 1] });
+    } else {
+      onClose();
+    }
+  }
+
   // אישור משימה
   const handleApprove = async () => {
     setLoading(true);
     try {
       await onEventApprove({ ...editedEvent, status: 'confirmed' });
-      setEditedEvent({ ...emptyEvent });
+      goToNextOrClose();
     } catch {
-      setEditedEvent({ ...emptyEvent });
+      // טיפול בשגיאה אם צריך
     }
     setLoading(false);
   };
@@ -70,9 +79,9 @@ export function EventSidebar({
     setLoading(true);
     try {
       await onEventReject({ ...editedEvent, status: 'rejected' });
-      setEditedEvent({ ...emptyEvent });
-      setIsAddMode(true);
+      goToNextOrClose();
     } catch {
+      // טיפול בשגיאה אם צריך
     }
     setLoading(false);
   };

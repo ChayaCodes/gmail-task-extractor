@@ -2,92 +2,131 @@
 
 ## Overview
 
-The Gmail Event Extractor is a Chrome extension designed to enhance productivity by extracting events from incoming emails and adding them to Google Calendar. Utilizing the InboxSDK, this extension identifies relevant emails, processes them with an AI model, and presents event suggestions in a user-friendly sidebar interface.
+**Gmail Event Extractor** is a Chrome extension that automatically detects tasks and events in your Gmail emails, displays them in an interactive sidebar, and lets you add them directly to your Google Calendar. The extension uses InboxSDK, AI (GROQ API), and a modern Preact-based UI.
+
+---
 
 ## Features
 
-- **Email Processing**: Automatically identifies and extracts events from emails in your inbox.
-- **AI Integration**: Uses the GROQ API to analyze email content and generate event suggestions.
-- **Calendar Integration**: Seamlessly adds tasks and events to Google Calendar.
-- **User Interface**: A sidebar within Gmail that displays task suggestions and allows users to edit or confirm tasks.
+- **Automatic detection of events and tasks** in Gmail emails.
+- **AI-powered suggestions (GROQ API)** for smart event extraction.
+- **One-click add to Google Calendar** (with automatic link to the original email).
+- **Interactive UI:** Edit, approve, reject, or manually add tasks from the sidebar.
+- **GROQ API key stored locally** (prompted only on first use).
+- **Google authentication (OAuth)** directly from the sidebar.
+- **Persistent sidebar button** for manual activation, even without a detected email.
+
+---
 
 ## Project Structure
 
 ```
 gmail-task-extractor
 ├── src
-│   ├── background
-│   │   └── background.ts
-│   ├── content
-│   │   └── main.ts
-│   ├── interfaces
-│   │   ├── ai-model.interface.ts
-│   │   ├── calendar.interface.ts
-│   │   └── email-processor.interface.ts
-│   ├── services
-│   │   ├── ai
-│   │   │   ├── groq-service.ts
-│   │   │   └── ai-service.ts
-│   │   ├── calendar
-│   │   │   ├── calendar-service.ts
-│   │   │   └── google-calendar.ts
-│   │   └── email
-│   │       └── email-parser.ts
-│   ├── ui
-│   │   ├── components
-│   │   │   ├── sidebar.ts
-│   │   │   ├── task-item.ts
-│   │   │   └── task-editor.ts
-│   │   └── styles
-│   │       └── main.css
-│   └── utils
-│       ├── storage.ts
-│       └── logger.ts
-├── public
-│   ├── manifest.json
-│   ├── icons
-│   │   ├── icon16.png
-│   │   ├── icon48.png
-│   │   └── icon128.png
-│   └── popup.html
+│   ├── background/         # Chrome background scripts (OAuth, permissions)
+│   ├── content/            # Content scripts (main logic, Gmail integration)
+│   ├── interfaces/         # TypeScript interfaces
+│   ├── services/           # Business logic (AI, calendar, auth, storage, InboxSDK)
+│   ├── types/              # Type definitions (Event, EmailDetails, etc.)
+│   ├── ui/
+│   │   ├── components/     # Preact components (Sidebar, Forms, Actions)
+│   │   └── styles/         # CSS files
+│   └── utils/              # Utilities (logger, storage, date formatting)
+├── public/                 # Manifest, popup, icons
+├── tests/                  # Unit & integration tests
 ├── webpack.config.js
 ├── tsconfig.json
 ├── package.json
 └── README.md
 ```
 
+---
+
 ## Installation
 
-1. Clone the repository:
-   ```
+1. **Clone the repository:**
+
+   ```sh
    git clone https://github.com/yourusername/gmail-task-extractor.git
-   ```
-2. Navigate to the project directory:
-   ```
    cd gmail-task-extractor
    ```
-3. Install the dependencies:
-   ```
+2. **Install dependencies:**
+
+   ```sh
    npm install
    ```
+3. **Build the extension:**
+
+   ```sh
+   npm run build
+   ```
+4. **Load in Chrome:**
+
+   - Go to `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked" and select the `public` directory
+
+---
+
+## First Use & Configuration
+
+
+1. **Google Authentication:**
+   in the first time you click on the approve task button, you will be prompted to authenticate with your Google account. This is required to access your calendar and add events.
+
+---
 
 ## Usage
 
-1. Load the extension in Chrome:
-   - Go to `chrome://extensions/`
-   - Enable "Developer mode"
-   - Click "Load unpacked" and select the `public` directory.
-2. Open Gmail and start using the extension to extract tasks from your emails.
+- **Sidebar Activation:**
+
+  - Automatically opens when an event/task is detected in an email.
+
+- **Task Management:**
+
+  - Edit, approve, reject.
+  - Every event added to your calendar includes a link to the original email.
+
+---
 
 ## Development
 
-- The project is structured to separate concerns, allowing for easy updates and maintenance.
-- Interfaces are used to define contracts for services, making it easy to swap out implementations as needed.
+- **Run unit tests:**
+  ```sh
+  npm run test:unit
+  ```
+- **Run integration tests:**
+  ```sh
+  npm run test:integration
+  ```
+- **Development build (auto-rebuild):**
+  ```sh
+  npm run watch
+  ```
 
-## Contributing
+---
 
-Contributions are welcome! Please submit a pull request or open an issue for any suggestions or improvements.
+## Contribution
+
+Pull requests, bug reports, and suggestions are welcome!
+
+---
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+MIT
+
+---
+
+## Screenshots
+
+### Gmail sidebar with detected events
+![Sidebar with detected events](./screenshots/gmail.png)
+
+### event added to Google Calendar
+![Add event to Google Calendar](./screenshots/calendar.png)
+
+---
+
+**Questions?**
+Open an issue or contact us by email.

@@ -4,13 +4,23 @@ import { Event } from '/src/types/event.types';
 import '/src/ui/styles/EventForm.css';
 
 // פונקציה שממירה Date או מחרוזת ISO לפורמט שה-input דורש
-function toInputDateTime(val?: string | Date | null) {
+function toInputDateTime(val?: Date | null) {
   if (!val) {
     return '';
   }
   const d = typeof val === 'string' ? new Date(val) : val;
-  // מחזיר yyyy-MM-ddTHH:mm
-  return d.toISOString().slice(0, 16);
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return (
+    d.getFullYear() +
+    '-' +
+    pad(d.getMonth() + 1) +
+    '-' +
+    pad(d.getDate()) +
+    'T' +
+    pad(d.getHours()) +
+    ':' +
+    pad(d.getMinutes())
+  );
 }
 
 export function EventForm({

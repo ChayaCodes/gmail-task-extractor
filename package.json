@@ -1,7 +1,7 @@
 {
-  "name": "gmail-task-extractor",
+  "name": "gmail-event-extractor",
   "version": "1.0.0",
-  "description": "A Chrome extension that extracts tasks from Gmail and adds them to Google Calendar using AI.",
+  "description": "A Chrome extension that extracts events from Gmail and adds them to Google Calendar using AI.",
   "main": "src/background/background.ts",
   "scripts": {
     "build": "webpack --mode production",

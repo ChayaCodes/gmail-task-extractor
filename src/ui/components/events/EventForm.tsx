@@ -72,6 +72,7 @@ export function EventForm({
             name="startTime"
             value={formData.startTime || ''}
             onChange={handleChange}
+            required
           />
         </div>
       </div>
@@ -85,6 +86,7 @@ export function EventForm({
             name="endDate"
             value={formData.endDate || formData.startDate}
             onChange={handleChange}
+            
           />
         </div>
         <div className="form-group date-time-group">
@@ -95,6 +97,7 @@ export function EventForm({
             name="endTime"
             value={formData.endTime || ''}
             onChange={handleChange}
+            required
           />
         </div>
       </div>

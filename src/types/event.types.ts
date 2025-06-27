@@ -8,4 +8,5 @@ export interface Event {
   endTime: string;
   location?: string;
   status: 'suggested' | 'edited' | 'confirmed' | 'rejected';
+  mailLink?: string;
 }

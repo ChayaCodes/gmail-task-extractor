@@ -1,15 +1,18 @@
-# Gmail Task Extractor
+# Gmail Event Extractor
 
 ## Overview
-The Gmail Task Extractor is a Chrome extension designed to enhance productivity by extracting tasks from incoming emails and adding them to Google Calendar. Utilizing the InboxSDK, this extension identifies relevant emails, processes them with an AI model, and presents task suggestions in a user-friendly sidebar interface.
+
+The Gmail Event Extractor is a Chrome extension designed to enhance productivity by extracting events from incoming emails and adding them to Google Calendar. Utilizing the InboxSDK, this extension identifies relevant emails, processes them with an AI model, and presents event suggestions in a user-friendly sidebar interface.
 
 ## Features
-- **Email Processing**: Automatically identifies and extracts tasks from emails in your inbox.
-- **AI Integration**: Uses the GROQ API to analyze email content and generate task suggestions.
+
+- **Email Processing**: Automatically identifies and extracts events from emails in your inbox.
+- **AI Integration**: Uses the GROQ API to analyze email content and generate event suggestions.
 - **Calendar Integration**: Seamlessly adds tasks and events to Google Calendar.
 - **User Interface**: A sidebar within Gmail that displays task suggestions and allows users to edit or confirm tasks.
 
 ## Project Structure
+
 ```
 gmail-task-extractor
 ├── src
@@ -54,6 +57,7 @@ gmail-task-extractor
 ```
 
 ## Installation
+
 1. Clone the repository:
    ```
    git clone https://github.com/yourusername/gmail-task-extractor.git
@@ -68,6 +72,7 @@ gmail-task-extractor
    ```
 
 ## Usage
+
 1. Load the extension in Chrome:
    - Go to `chrome://extensions/`
    - Enable "Developer mode"
@@ -75,11 +80,14 @@ gmail-task-extractor
 2. Open Gmail and start using the extension to extract tasks from your emails.
 
 ## Development
+
 - The project is structured to separate concerns, allowing for easy updates and maintenance.
 - Interfaces are used to define contracts for services, making it easy to swap out implementations as needed.
 
 ## Contributing
+
 Contributions are welcome! Please submit a pull request or open an issue for any suggestions or improvements.
 
 ## License
+
 This project is licensed under the MIT License. See the LICENSE file for details.

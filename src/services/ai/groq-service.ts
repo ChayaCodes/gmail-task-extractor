@@ -10,43 +10,49 @@ export class GroqService implements EventExtractor {
 
   async getEventSuggestions(emailDetails: EmailDetails): Promise<Event[]> {
     try {
+      const MAX_BODY_LENGTH = 4000; // או כל ערך שמתאים לדרישות ה-API
+
+      // חיתוך גוף ההודעה אם הוא ארוך מדי
+      const { body } = emailDetails;
+      if (body.length > MAX_BODY_LENGTH) {
+        body = body.slice(0, MAX_BODY_LENGTH) + "\n[...truncated]";
+      }
+
       const messages = [
         {
           role: "system",
           content:
-        "You are an AI assistant that extracts events from email content. If there are links, phone numbers, addresses, or any other relevant data, include them in the event description. Be exhaustive and detailed.",
+            "You are an AI assistant that extracts events from email content. If there are links, phone numbers, addresses, or any other relevant data, include them in the event description. Be exhaustive and detailed.",
         },
         {
           role: "user",
           content: `Extract events from the following email:
         
-    From: ${emailDetails.senderName} (${emailDetails.senderEmail})
-    Date: ${emailDetails.dateTime}
-    Subject: ${emailDetails.subject}
-    Body: ${emailDetails.body}
+From: ${emailDetails.senderName} (${emailDetails.senderEmail})
+Date: ${emailDetails.dateTime}
+Subject: ${emailDetails.subject}
+Body: ${body}
 
-    return the event in the same language of the email.
+return the event in the same language of the email.
 
-    Include all the details you can find in the email, such as date, time, location, and a long, detailed description. 
-    If the email describes a course, workshop, or event with multiple sessions, dates, or meetings, extract each session/date/meeting as a separate event object in the array, even if they are part of the same overall event.
+Include all the details you can find in the email, such as date, time, location, and a long, detailed description. 
+If the email contains multiple events, Or are there several dates for the event, extract each one in seperate object in one array.
 
-
-    Return a JSON array of events with this exact structure:
-    [
-      {
-        "title": "Event title" use infurmative and descriptive short title.
-        "description": "Detailed description, all relevant information from the email, and all the details you can find like cost, organizer, attendings, how to register, what will happen, etc. return multi-line description. Use \n to indicate a new line.",
-        "startDate": "yyyy-MM-dd" (required),
-        "startTime": "HH:MM" (required),
-        "endDate": "yyyy-MM-dd" (required),
-        "endTime": "HH:MM" (required),
-        "location": "Optional location, if online, specify 'Online' and link if available. Don't include additional details.",
-      }, 
-      ...
-    ]
-      
-    Return only events array in JSON format, do not include any additional text or explanations. If you cannot find any events, return an empty array: [].
-    `,
+Return a JSON array of events with this exact structure:
+[
+  {
+    "title": "Event title" use infurmative and descriptive short title.
+    "description": "Detailed description, all relevant information from the email, and all the details you can find like cost, organizer, attendings, how to register, what will happen, etc. return multi-line description. Use \\n to indicate a new line.",
+    "startDate": "yyyy-MM-dd" (required),
+    "startTime": "HH:MM" (required),
+    "endDate": "yyyy-MM-dd" (required),
+    "endTime": "HH:MM" (required),
+    "location": "Optional location, if online, specify 'Online' and link if available. Don't include additional details.",
+  }, 
+  ...
+]
+  
+Return only events array in JSON format, do not include any additional text or explanations. If you cannot find any events, return an empty array: [].`,
         },
       ];
 
@@ -60,7 +66,6 @@ export class GroqService implements EventExtractor {
 
   private async sendChatRequest(messages: any[]): Promise<string> {
     try {
-
       const headers = {
         Authorization: `Bearer ${this.apiKey}`,
         "Content-Type": "application/json",

@@ -28,7 +28,7 @@ export class GroqService implements EventExtractor {
     return the event in the same language of the email.
 
     Include all the details you can find in the email, such as date, time, location, and a long, detailed description. 
-    If the email contains multiple events, Or are there several dates for the event, extract each one in seperate object in one array.
+    If the email describes a course, workshop, or event with multiple sessions, dates, or meetings, extract each session/date/meeting as a separate event object in the array, even if they are part of the same overall event.
 
 
     Return a JSON array of events with this exact structure:

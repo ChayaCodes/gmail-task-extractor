@@ -13,7 +13,7 @@ export class GroqService implements EventExtractor {
       const MAX_BODY_LENGTH = 4000; // או כל ערך שמתאים לדרישות ה-API
 
       // חיתוך גוף ההודעה אם הוא ארוך מדי
-      const { body } = emailDetails;
+      let { body } = emailDetails;
       if (body.length > MAX_BODY_LENGTH) {
         body = body.slice(0, MAX_BODY_LENGTH) + "\n[...truncated]";
       }

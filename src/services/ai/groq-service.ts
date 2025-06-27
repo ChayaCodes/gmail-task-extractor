@@ -14,33 +14,38 @@ export class GroqService implements EventExtractor {
         {
           role: "system",
           content:
-            "You are an AI assistant that extracts events from email content. Extract all possible events including meetings, appointments, and deadlines.",
+        "You are an AI assistant that extracts events from email content. If there are links, phone numbers, addresses, or any other relevant data, include them in the event description. Be exhaustive and detailed.",
         },
         {
           role: "user",
           content: `Extract events from the following email:
-            
-From: ${emailDetails.senderName} (${emailDetails.senderEmail})
-Date: ${emailDetails.dateTime}
-Subject: ${emailDetails.subject}
-Body: ${emailDetails.body}
+        
+    From: ${emailDetails.senderName} (${emailDetails.senderEmail})
+    Date: ${emailDetails.dateTime}
+    Subject: ${emailDetails.subject}
+    Body: ${emailDetails.body}
 
-Return a JSON array of events with this exact structure:
-[
-  {
-    "title": "Event title",
-    "description": "Detailed description, all relevant information",
-    "startDate": "YYYY-MM-DD", 
-    "startTime": "HH:MM",
-    "endDate": "YYYY-MM-DD",
-    "endTime": "HH:MM",
-    "location": "Optional location, if online, specify 'Online' and link if available",
-  }, 
-  ...
-    
-]
+    return the event in the same language of the email.
 
-If no events are found, return an empty array: []`,
+    Include all the details you can find in the email, such as date, time, location, and a long, detailed description. 
+    If the email contains multiple events, extract each one separately.
+
+    Return a JSON array of events with this exact structure:
+    [
+      {
+        "title": "Event title" use infurmative and descriptive short title.
+        "description": "Detailed description, all relevant information from the email, and all the details you can find like cost, organizer, attendings, how to register, what will happen, etc. return multi-line description. Use \n to indicate a new line.",
+        "startDate": "yyyy-MM-dd" (required),
+        "startTime": "HH:MM" (required),
+        "endDate": "yyyy-MM-dd" (required),
+        "endTime": "HH:MM" (required),
+        "location": "Optional location, if online, specify 'Online' and link if available. Don't include additional details.",
+      }, 
+      ...
+    ]
+      
+    Return only events array in JSON format, do not include any additional text or explanations. If you cannot find any events, return an empty array: [].
+    `,
         },
       ];
 

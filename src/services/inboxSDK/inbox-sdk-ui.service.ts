@@ -22,7 +22,7 @@ export class InboxSDKUIService {
 
     this.currentSidebarPanel = messageView.getThreadView().addSidebarContentPanel({
       el: sidebarEl,
-      title: "Tasks",
+      title: "",
       iconUrl: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png',
       className: "event-sidebar-panel",
 

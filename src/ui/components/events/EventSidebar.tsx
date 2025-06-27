@@ -95,7 +95,7 @@ export function EventSidebar({
   return (
     <div className="event-sidebar">
       <div className="event-sidebar-header">
-        <h2>{`משימות מזוהות (${events.length})`}</h2>
+        <h2>{`אירועים שזוהו (${events.length})`}</h2>
         <button onClick={handleClose} className="close-button">×</button>
       </div>
 

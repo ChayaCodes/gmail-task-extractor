@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Gmail Task Extractor",
+  "name": "Gmail Event Extractor",
   "version": "1.0.0",
-  "description": "Extract tasks from Gmail emails",
+  "description": "Extract events from Gmail emails",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
   "action": {
-    "default_title": "Gmail Task Extractor"
+    "default_title": "Gmail Event Extractor"
   },
   "content_scripts": [
     {

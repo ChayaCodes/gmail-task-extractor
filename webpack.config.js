@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 
 module.exports = {
     mode: 'production',
@@ -58,6 +59,7 @@ module.exports = {
         }),
         new Dotenv({
             systemvars: true
-        })
+        }),
+        new webpack.ProgressPlugin(),
     ],
 };

@@ -1,5 +1,6 @@
 import '@inboxsdk/core/background.js';
 
+console.log('Background script initialized');
 
 // האזנה לבקשות מה-content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

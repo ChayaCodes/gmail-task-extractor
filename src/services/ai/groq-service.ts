@@ -56,10 +56,12 @@ Return only events array in JSON format, do not include any additional text or e
         },
       ];
 
+      console.log("Sending request to Groq API for event extraction...", messages);
       const response = await this.sendChatRequest(messages);
 
       return this.parseResponse(response);
     } catch (error) {
+      console.error("Error extracting events:", error);
       return [];
     }
   }
@@ -79,8 +81,10 @@ Return only events array in JSON format, do not include any additional text or e
 
       const response = await axios.post(this.apiUrl, data, { headers });
 
+      console.log("Groq API response received");
       return response.data.choices[0].message.content;
     } catch (error) {
+      console.error("Error communicating with Groq API:", error);
       throw new Error("Failed to communicate with AI model");
     }
   }

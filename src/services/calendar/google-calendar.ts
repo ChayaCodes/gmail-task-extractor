@@ -2,7 +2,7 @@ import { CalendarEvent, CalendarService } from '../../interfaces/calendar.interf
 import { GoogleAuthService } from '../auth/oauth-service';
 
 export class GoogleCalendar implements CalendarService {
-    private oauthService: GoogleAuthService;
+    public oauthService: GoogleAuthService;
     private apiKey: string;
 
     constructor() {

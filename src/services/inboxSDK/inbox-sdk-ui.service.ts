@@ -42,7 +42,8 @@ export class InboxSDKUIService {
 
   public closeCurrentSidebar(): void {
     if (this.currentSidebarPanel) {
-      this.currentSidebarPanel.close();
+      this.currentSidebarPanel.remove();
+
     }
   }
 }

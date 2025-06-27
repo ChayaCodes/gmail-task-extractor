@@ -72,9 +72,8 @@ function handleExtractedEvents(events: Event[], emailDetails: EmailDetails, mess
     console.log(`No events found in email: ${emailDetails.subject}`);
     return;
   }
-  const threadId = messageView.getThreadView()?.getThreadID();
+  const threadId = messageView?.getThreadView()?.getThreadID();
   const mailLink = threadId ? `https://mail.google.com/mail/u/0/#inbox/${threadId}` : '';
-  console.log(mailLink ? `Mail link: ${mailLink}` : 'No mail link available');
   console.log(`Found ${events.length} events in email: ${emailDetails.subject}`);
   events.forEach((event, index) => {
     logEventDetails(event, index);
@@ -86,8 +85,7 @@ function handleExtractedEvents(events: Event[], emailDetails: EmailDetails, mess
 
 function logEventDetails(event: Event, index: number): void {
   console.log(`Event ${index + 1}: ${event.title}`, {
-    date: `${event.startDate} (${event.startTime} - ${event.endTime})`,
-    location: event.location || 'No location'
+    event
   });
 }
 

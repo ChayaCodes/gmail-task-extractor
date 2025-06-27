@@ -48,9 +48,9 @@ function registerEventHandlers(): void {
 }
 
 async function handleEmailOpened(emailDetails: EmailDetails, messageView: any): Promise<void> {
-  console.log(`Email opened: `, emailDetails);  
+  console.log(`Email opened: `, emailDetails);
   await processEmailForEvents(emailDetails, messageView);
-  
+
 }
 
 async function processEmailForEvents(emailDetails: EmailDetails, messageView: any): Promise<void> {
@@ -72,11 +72,16 @@ function handleExtractedEvents(events: Event[], emailDetails: EmailDetails, mess
     console.log(`No events found in email: ${emailDetails.subject}`);
     return;
   }
+  const threadId = messageView.getThreadView()?.getThreadID();
+  const mailLink = threadId ? `https://mail.google.com/mail/u/0/#inbox/${threadId}` : '';
+  console.log(mailLink ? `Mail link: ${mailLink}` : 'No mail link available');
   console.log(`Found ${events.length} events in email: ${emailDetails.subject}`);
   events.forEach((event, index) => {
     logEventDetails(event, index);
   });
-  showEventSidebar(events, messageView);
+  const eventsWithLink = events.map(ev => ({ ...ev, mailLink }));
+
+  showEventSidebar(eventsWithLink, messageView);
 }
 
 function logEventDetails(event: Event, index: number): void {
@@ -100,24 +105,20 @@ function handleEventUpdate(event: Event): void {
 
 async function handleEventApprove(event: Event): Promise<void> {
   console.log('Event approved:', event);
-  try {
-    const calendarEvent: CalendarEvent = {
-      title: event.title,
-      description: event.description,
-      start: new Date(`${event.startDate}T${event.startTime}`),
-      end: new Date(`${event.endDate}T${event.endTime}`),
-      location: event.location,
-    };
-    const eventId = await services.calendar.addEvent(calendarEvent);
-    console.log('Event added to Google Calendar, id:', eventId);
-  } catch (err) {
-    console.error('Failed to add event to Google Calendar', err);
-  }
-  services.uiService.closeCurrentSidebar();
+  const calendarEvent: CalendarEvent = {
+    title: event.title,
+    description: event.description +
+      (event.mailLink ? `\n\n------------------\nקישור למייל המקורי:\n${event.mailLink}` : ''),
+    start: new Date(`${event.startDate}T${event.startTime}`),
+    end: new Date(`${event.endDate}T${event.endTime}`),
+    location: event.location,
+  };
+  await services.calendar.addEvent(calendarEvent);
 }
 
-function handleEventReject(event: Event): void {
+async function handleEventReject(event: Event): Promise<void> {
   console.log('Event rejected:', event);
+  // אפשר להוסיף לוגיקה אם צריך
 }
 
 bootstrap().catch(error => {

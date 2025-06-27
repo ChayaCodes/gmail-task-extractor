@@ -3,25 +3,45 @@ import { useState, useEffect } from 'preact/hooks';
 import { Event } from '/src/types/event.types';
 import '/src/ui/styles/EventForm.css';
 
-export function EventForm({ 
-  event, 
-  onEventChange 
+// פונקציה שממירה Date או מחרוזת ISO לפורמט שה-input דורש
+function toInputDateTime(val?: string | Date | null) {
+  if (!val) {
+    return '';
+  }
+  const d = typeof val === 'string' ? new Date(val) : val;
+  // מחזיר yyyy-MM-ddTHH:mm
+  return d.toISOString().slice(0, 16);
+}
+
+export function EventForm({
+  event,
+  onEventChange
 }: {
   event: Event;
   onEventChange: (updatedEvent: Event) => void;
 }) {
-  const [formData, setFormData] = useState<Event>({...event});
+  const [formData, setFormData] = useState<Event>({ ...event });
 
-  // עדכון הטופס כשמשתנה האירוע הפעיל
   useEffect(() => {
-    setFormData({...event});
+    setFormData({ ...event });
   }, [event]);
 
+  // עדכון ערך רגיל
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     const updatedEvent = {
       ...formData,
       [name]: value
+    };
+    setFormData(updatedEvent);
+    onEventChange(updatedEvent);
+  };
+
+  // עדכון ערך DateTime (שומר כ- Date)
+  const handleDateTimeChange = (name: string, value: string) => {
+    const updatedEvent = {
+      ...formData,
+      [name]: value ? new Date(value) : null
     };
     setFormData(updatedEvent);
     onEventChange(updatedEvent);
@@ -35,7 +55,7 @@ export function EventForm({
           type="text"
           id="title"
           name="title"
-          value={formData.title}
+          value={formData.title || ''}
           onChange={handleChange}
           placeholder="כותרת האירוע"
         />
@@ -55,48 +75,24 @@ export function EventForm({
 
       <div className="form-row">
         <div className="form-group date-time-group">
-          <label htmlFor="startDate">תאריך התחלה</label>
+          <label htmlFor="startDateTime">תאריך ושעת התחלה</label>
           <input
-            type="date"
-            id="startDate"
-            name="startDate"
-            value={formData.startDate}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group date-time-group">
-          <label htmlFor="startTime">שעת התחלה</label>
-          <input
-            type="time"
-            id="startTime"
-            name="startTime"
-            value={formData.startTime || ''}
-            onChange={handleChange}
+            type="datetime-local"
+            id="startDateTime"
+            name="startDateTime"
+            value={toInputDateTime(formData.startDateTime)}
+            onChange={(e) => handleDateTimeChange('startDateTime', (e.target as HTMLInputElement).value)}
             required
           />
         </div>
-      </div>
-
-      <div className="form-row">
         <div className="form-group date-time-group">
-          <label htmlFor="endDate">תאריך סיום</label>
+          <label htmlFor="endDateTime">תאריך ושעת סיום</label>
           <input
-            type="date"
-            id="endDate"
-            name="endDate"
-            value={formData.endDate || formData.startDate}
-            onChange={handleChange}
-            
-          />
-        </div>
-        <div className="form-group date-time-group">
-          <label htmlFor="endTime">שעת סיום</label>
-          <input
-            type="time"
-            id="endTime"
-            name="endTime"
-            value={formData.endTime || ''}
-            onChange={handleChange}
+            type="datetime-local"
+            id="endDateTime"
+            name="endDateTime"
+            value={toInputDateTime(formData.endDateTime)}
+            onChange={(e) => handleDateTimeChange('endDateTime', (e.target as HTMLInputElement).value)}
             required
           />
         </div>

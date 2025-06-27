@@ -8,10 +8,8 @@ import '/src/ui/styles/EventSidebar.css';
 const emptyEvent: Event = {
   title: '',
   description: '',
-  startDate: '',
-  startTime: '',
-  endDate: '',
-  endTime: '',
+  startDateTime: new Date(),
+  endDateTime: new Date(new Date().getTime() + 60 * 60 * 1000), 
   location: '',
   status: 'suggested'
 };
@@ -33,6 +31,7 @@ export function EventSidebar({
   const [isAddMode, setIsAddMode] = useState(events.length === 0);
   const [editedEvent, setEditedEvent] = useState<Event>(isAddMode ? { ...emptyEvent } : { ...events[0] });
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // ניווט בין אירועים
   const handleNextEvent = () => {
@@ -64,12 +63,18 @@ export function EventSidebar({
 
   // אישור משימה
   const handleApprove = async () => {
+    setErrorMsg('');
+    if (!editedEvent.title) {
+      setErrorMsg('יש להזין כותרת לאירוע');
+      return;
+    }
+
     setLoading(true);
     try {
       await onEventApprove({ ...editedEvent, status: 'confirmed' });
       goToNextOrClose();
-    } catch {
-      // טיפול בשגיאה אם צריך
+    } catch (err) {
+      setErrorMsg('אירעה שגיאה בעת ההוספה ליומן. נסה שוב.');
     }
     setLoading(false);
   };
@@ -77,11 +82,12 @@ export function EventSidebar({
   // דחיית משימה
   const handleReject = async () => {
     setLoading(true);
+    setErrorMsg('');
     try {
       await onEventReject({ ...editedEvent, status: 'rejected' });
       goToNextOrClose();
-    } catch {
-      // טיפול בשגיאה אם צריך
+    } catch (err) {
+      setErrorMsg('אירעה שגיאה בעת הדחייה. נסה שוב.');
     }
     setLoading(false);
   };
@@ -99,8 +105,6 @@ export function EventSidebar({
         <button onClick={handleClose} className="close-button">×</button>
       </div>
 
-      {loading && <div className="loading-msg">מוסיף ליומן...</div>}
-
       {events.length > 0 && (
         <>
           {events.length > 1 && (
@@ -114,6 +118,14 @@ export function EventSidebar({
           )}
           <EventForm event={editedEvent} onEventChange={setEditedEvent} />
           <EventActions onApprove={handleApprove} onReject={handleReject} />
+
+          {/* הודעות שגיאה וטעינה בתחתית */}
+          <div style={{ minHeight: 32, marginTop: 8 }}>
+            {errorMsg && (
+              <div className="event-error-msg">{errorMsg}</div>
+            )}
+            {loading && <div className="loading-msg">מוסיף ליומן...</div>}
+          </div>
         </>
       )}
     </div>

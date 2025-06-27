@@ -5,7 +5,6 @@ import { InboxSDKUIService } from '/src/services/inboxSDK/inbox-sdk-ui.service';
 import { EmailDetails } from '/src/types/email.types';
 import { Event } from '/src/types/event.types';
 import { GoogleCalendar } from '/src/services/calendar/google-calendar';
-import { CalendarEvent } from '/src/interfaces/calendar.interface';
 
 // Application configuration
 const CONFIG = {
@@ -103,15 +102,8 @@ function handleEventUpdate(event: Event): void {
 
 async function handleEventApprove(event: Event): Promise<void> {
   console.log('Event approved:', event);
-  const calendarEvent: CalendarEvent = {
-    title: event.title,
-    description: event.description +
-      (event.mailLink ? `\n\n------------------\nקישור למייל המקורי:\n${event.mailLink}` : ''),
-    start: new Date(`${event.startDate}T${event.startTime}`),
-    end: new Date(`${event.endDate}T${event.endTime}`),
-    location: event.location,
-  };
-  await services.calendar.addEvent(calendarEvent);
+
+  await services.calendar.addEvent(event);
 }
 
 async function handleEventReject(event: Event): Promise<void> {

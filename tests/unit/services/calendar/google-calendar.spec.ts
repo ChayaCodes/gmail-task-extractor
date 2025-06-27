@@ -1,5 +1,6 @@
 import { GoogleCalendar } from '../../../../src/services/calendar/google-calendar';
-import { CalendarEvent } from '../../../../src/interfaces/calendar.interface';
+import {Event} from  '../../../../src/types/event.types';
+
 
 // Mock GoogleAuthService
 jest.mock('/src/services/auth/oauth-service', () => ({
@@ -10,11 +11,11 @@ jest.mock('/src/services/auth/oauth-service', () => ({
 
 describe('GoogleCalendar', () => {
   let calendar: GoogleCalendar;
-  const event: CalendarEvent = {
+  const event: Event = {
     title: 'Test Event',
     description: 'Test Description',
-    start: new Date('2024-07-01T10:00:00Z'),
-    end: new Date('2024-07-01T11:00:00Z'),
+    startDateTime: new Date('2023-10-01T10:00:00Z'),
+    endDateTime: new Date('2023-10-01T11:00:00Z'),
     location: 'Test Location',
   };
 

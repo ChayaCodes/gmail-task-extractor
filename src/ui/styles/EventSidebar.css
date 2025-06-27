@@ -105,3 +105,15 @@
   border-radius: 0.3em;
   text-align: center;
 }
+
+/* EventSidebar.css */
+.event-error-msg {
+  color: #b71c1c;
+  background: #ffeaea;
+  border: 1px solid #ffcdd2;
+  padding: 8px 12px;
+  margin: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.95em;
+  text-align: right;
+}

@@ -1,5 +1,6 @@
-import { CalendarEvent, CalendarService } from '../../interfaces/calendar.interface';
+import { CalendarService } from '../../interfaces/calendar.interface';
 import { GoogleAuthService } from '../auth/oauth-service';
+import {Event} from '/src/types/event.types';
 
 export class GoogleCalendar implements CalendarService {
     public oauthService: GoogleAuthService;
@@ -10,18 +11,22 @@ export class GoogleCalendar implements CalendarService {
         this.apiKey = (this.oauthService as any).apiKey || process.env.GOOGLE_CREDENTIALS_API_KEY || '';
     }
 
-    async addEvent(event: CalendarEvent): Promise<string> {
+    async addEvent(event: Event): Promise<string> {
         const token = await this.oauthService.getAuthToken();
+        // Convert Event fields to ISO strings for Google Calendar
+        const startDateTime = event.startDateTime.toISOString();
+        const endDateTime = event.endDateTime.toISOString();
+
         const googleEvent = {
             summary: event.title,
             description: event.description,
             start: {
-                dateTime: event.start.toISOString(),
-                timeZone: 'Asia/Jerusalem',
+            dateTime: startDateTime,
+            timeZone: 'Asia/Jerusalem',
             },
             end: {
-                dateTime: event.end.toISOString(),
-                timeZone: 'Asia/Jerusalem',
+            dateTime: endDateTime,
+            timeZone: 'Asia/Jerusalem',
             },
             location: event.location,
         };

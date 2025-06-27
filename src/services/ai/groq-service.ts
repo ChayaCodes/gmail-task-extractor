@@ -10,9 +10,7 @@ export class GroqService implements EventExtractor {
 
   async getEventSuggestions(emailDetails: EmailDetails): Promise<Event[]> {
     try {
-      const MAX_BODY_LENGTH = 4000; // או כל ערך שמתאים לדרישות ה-API
-
-      // חיתוך גוף ההודעה אם הוא ארוך מדי
+      const MAX_BODY_LENGTH = 4000;
       let { body } = emailDetails;
       if (body.length > MAX_BODY_LENGTH) {
         body = body.slice(0, MAX_BODY_LENGTH) + "\n[...truncated]";
@@ -44,9 +42,9 @@ Return a JSON array of events with this exact structure:
     "title": "Event title" use infurmative and descriptive short title.
     "description": "Detailed description, all relevant information from the email, and all the details you can find like cost, organizer, attendings, how to register, what will happen, etc. return multi-line description. Use \\n to indicate a new line.",
     "startDate": "yyyy-MM-dd" (required),
-    "startTime": "HH:MM" (required),
+    "startTime": "HH:mm" (required),
     "endDate": "yyyy-MM-dd" (required),
-    "endTime": "HH:MM" (required),
+    "endTime": "HH:mm" (required),
     "location": "Optional location, if online, specify 'Online' and link if available. Don't include additional details.",
   }, 
   ...
@@ -103,19 +101,30 @@ Return only events array in JSON format, do not include any additional text or e
         events = responseContent;
       }
 
-      return events.map((event) => ({
-        title: event.title || "Untitled Event",
-        description: event.description || "",
-        startDate: event.startDate || new Date().toISOString().split("T")[0],
-        startTime: event.startTime || "09:00",
-        endDate:
-          event.endDate ||
-          event.startDate ||
-          new Date().toISOString().split("T")[0],
-        endTime: event.endTime || "10:00",
-        location: event.location || "",
-        status: "suggested",
-      }));
+      // Helper to validate time in HH:mm format
+      function isValidTime(time?: string) {
+        return typeof time === "string" && /^\d{2}:\d{2}$/.test(time);
+      }
+
+      // Helper to validate date in yyyy-MM-dd format
+      function isValidDate(date?: string) {
+        return typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date);
+      }
+
+      return events.map((event) => {
+        const startDate = isValidDate(event.startDate) ? event.startDate : new Date().toISOString().split("T")[0];
+        const endDate = isValidDate(event.endDate) ? event.endDate : startDate;
+        const startTime = isValidTime(event.startTime) ? event.startTime : "09:00";
+        const endTime = isValidTime(event.endTime) ? event.endTime : "10:00";
+        return {
+          title: event.title || "Untitled Event",
+          description: event.description || "",
+          startDateTime: new Date(`${startDate}T${startTime}:00`),
+          endDateTime: new Date(`${endDate}T${endTime}:00`),
+          location: event.location || "",
+          status: "suggested",
+        };
+      });
     } catch (error) {
       console.error("Error parsing AI response:", error);
       return [];

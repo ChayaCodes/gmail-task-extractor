@@ -65,7 +65,10 @@ export class InboxSDKUIService {
     if (options.type === "error") {
       this.sdk.ButterBar.showError({ text: message, time: options.timeout });
     } else {
-      this.sdk.ButterBar.showMessage({ text: message, time: options.timeout });
+      this.sdk.ButterBar.showMessage({
+        text: message,
+        time: options.timeout,
+      });
     }
   }
 }

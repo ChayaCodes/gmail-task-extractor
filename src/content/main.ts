@@ -25,6 +25,7 @@ async function bootstrap(): Promise<void> {
   try {
     await initializeServices();
     registerEventHandlers();
+    addNavBarButton();
   } catch (error) {
     console.error('Failed to initialize application', error);
   }
@@ -135,6 +136,25 @@ function handleEventUpdate(event: Event): void {
 async function handleEventReject(event: Event): Promise<void> {
   console.log('Event rejected:', event);
   // אפשר להוסיף לוגיקה אם צריך
+}
+
+function addNavBarButton() {
+  if (!services.inboxSDK) return;
+  const sdk = services.inboxSDK.getSdk();
+  sdk.Toolbar.addSidebarContentPanel({
+    title: 'Gmail Event Extractor',
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png',
+    className: 'gmail-event-extractor-panel',
+    el: document.createElement('div'),
+    onClick: () => {
+      console.log('NavBar button clicked');
+      // אפשר להוסיף לוגיקה לפתיחת צד-בר או פעולה אחרת
+      services.uiService?.closeCurrentSidebar();
+      services.uiService?.showNotification('Gmail Event Extractor is ready!', { type: 'info' });
+    }
+  });
+  console.log('NavBar button added');
+
 }
 
 bootstrap().catch(error => {

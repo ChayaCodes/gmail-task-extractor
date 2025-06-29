@@ -66,7 +66,10 @@ async function handleEventApprove(event: Event): Promise<void> {
   try {
     const eventId = await services.calendar.addEvent(event);
     services.uiService?.closeCurrentSidebar();
-    showSuccessNotification('האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.');
+    const eventLink = `https://calendar.google.com/event?eid=${eventId}`;
+    showSuccessNotification(
+     'האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.'
+    );
     // אם תרצי להציג קישור, אפשר להוסיף אותו לטקסט בלבד:
     // showSuccessNotification(`האירוע נוסף בהצלחה! חפש אותו ביומן Google שלך (ID: ${eventId})`);
   } catch (error: any) {

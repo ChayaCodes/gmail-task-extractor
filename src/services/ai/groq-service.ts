@@ -20,7 +20,7 @@ export class GroqService implements EventExtractor {
         {
           role: "system",
           content:
-            "You are an AI assistant that extracts events from email content. If there are links, phone numbers, addresses, or any other relevant data, include them in the event description. Be exhaustive and detailed.",
+            "You are an AI assistant that extracts events from email content.",
         },
         {
           role: "user",
@@ -31,16 +31,11 @@ Date: ${emailDetails.dateTime}
 Subject: ${emailDetails.subject}
 Body: ${body}
 
-return the event in the same language of the email.
-
-Include all the details you can find in the email, such as date, time, location, and a long, detailed description. 
-If the email contains multiple events, Or are there several dates for the event, extract each one in seperate object in one array.
-
 Return a JSON array of events with this exact structure:
 [
   {
     "title": "Event title" use infurmative and descriptive short title.
-    "description": "Detailed description, all relevant information from the email, and all the details you can find like cost, organizer, attendings, how to register, what will happen, etc. return multi-line description. Use \\n to indicate a new line.",
+    "description": "Detailed description, all relevant information from the email, return multi-line description. Use \\n to indicate a new line.",
     "startDate": "yyyy-MM-dd" (required),
     "startTime": "HH:mm" (required),
     "endDate": "yyyy-MM-dd" (required),

@@ -59,7 +59,6 @@ export class InboxSDKUIService {
       hideTitleBar: true,
       visible: open ?? false
     })
-    console.log("Sidebar panel created", this.currentSidebarPanel);
 
     render(
       h(EventSidebar, {

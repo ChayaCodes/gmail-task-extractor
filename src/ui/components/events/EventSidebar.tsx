@@ -1,5 +1,5 @@
-import { h, Fragment } from 'preact';
-import { useState } from 'preact/hooks';
+import { h } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import { Event } from '/src/types/event.types';
 import { EventForm } from './EventForm';
 import { EventActions } from './EventActions';
@@ -99,6 +99,15 @@ export function EventSidebar({
     onClose();
   };
 
+  // עדכון אירוע ערוך כאשר האירועים משתנים
+  useEffect(() => {
+    if (events.length > 0) {
+      setEditedEvent({ ...events[activeEventIndex] });
+    } else {
+      setEditedEvent({ ...emptyEvent });
+    }
+  }, [events, activeEventIndex]);
+
   return (
     <div className="event-sidebar">
       <div className="event-sidebar-header">
@@ -107,11 +116,13 @@ export function EventSidebar({
             ? `אירועים שזוהו (${events.length})`
             : 'הוסף אירוע חדש'}
         </h2>
-        <button onClick={handleClose} className="close-button">×</button>
+        <button onClick={handleClose} className="close-button">
+          ×
+        </button>
       </div>
 
-      (
-      <>
+      <div className="event-sidebar-content">
+
         {events.length > 1 && (
           <EventNavigation
             currentIndex={activeEventIndex}
@@ -120,16 +131,20 @@ export function EventSidebar({
             onNext={handleNextEvent}
           />
         )}
-
         <EventForm event={editedEvent} onEventChange={setEditedEvent} />
-        <EventActions onApprove={handleApprove} onReject={handleReject} />
-        <div>
-          {errorMsg && <div className="event-error-msg">{errorMsg}</div>}
-          {loading && <div className="loading-msg">מוסיף ליומן...</div>}
+        <EventActions
+          onApprove={handleApprove}
+          onReject={handleReject}
+        />
+        <div className="event-sidebar-messages">
+          {errorMsg && (
+            <div className="event-error-msg">{errorMsg}</div>
+          )}
+          {loading && (
+            <div className="loading-msg">מוסיף ליומן...</div>
+          )}
         </div>
-      </>
-
-      )
+      </div>
     </div>
   );
 }

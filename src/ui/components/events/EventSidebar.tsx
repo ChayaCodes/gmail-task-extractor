@@ -3,6 +3,7 @@ import { useState } from 'preact/hooks';
 import { Event } from '/src/types/event.types';
 import { EventForm } from './EventForm';
 import { EventActions } from './EventActions';
+import { EventNavigation } from './EventNavigation';
 import '/src/ui/styles/EventSidebar.css';
 
 const emptyEvent: Event = {
@@ -112,13 +113,12 @@ export function EventSidebar({
       (
       <>
         {events.length > 1 && (
-          <div className="event-navigation">
-            <span>אירוע {activeEventIndex + 1} מתוך {events.length}</span>
-            <div className="navigation-buttons">
-              <button className="nav-button" onClick={handlePrevEvent} disabled={activeEventIndex === 0}>הקודם</button>
-              <button className="nav-button" onClick={handleNextEvent} disabled={activeEventIndex === events.length - 1}>הבא</button>
-            </div>
-          </div>
+          <EventNavigation
+            currentIndex={activeEventIndex}
+            total={events.length}
+            onPrev={handlePrevEvent}
+            onNext={handleNextEvent}
+          />
         )}
 
         <EventForm event={editedEvent} onEventChange={setEditedEvent} />

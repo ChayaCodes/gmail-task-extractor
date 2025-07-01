@@ -25,7 +25,14 @@ async function bootstrap(): Promise<void> {
   try {
     await initializeServices();
     registerEventHandlers();
-    addNavBarButton();
+    services.uiService?.addSidebar({
+      onEventUpdate: handleEventUpdate,
+      onEventApprove: handleEventApprove,
+      onEventReject: handleEventReject,
+    },
+      false
+
+    )
   } catch (error) {
     console.error('Failed to initialize application', error);
   }
@@ -69,7 +76,7 @@ async function handleEventApprove(event: Event): Promise<void> {
     services.uiService?.closeCurrentSidebar();
     const eventLink = `https://calendar.google.com/event?eid=${eventId}`;
     showSuccessNotification(
-     'האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.'
+      'האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.'
     );
     // אם תרצי להציג קישור, אפשר להוסיף אותו לטקסט בלבד:
     // showSuccessNotification(`האירוע נוסף בהצלחה! חפש אותו ביומן Google שלך (ID: ${eventId})`);
@@ -138,24 +145,6 @@ async function handleEventReject(event: Event): Promise<void> {
   // אפשר להוסיף לוגיקה אם צריך
 }
 
-function addNavBarButton() {
-  if (!services.inboxSDK) return;
-  const sdk = services.inboxSDK.getSdk();
-  sdk.Toolbar.addSidebarContentPanel({
-    title: 'Gmail Event Extractor',
-    iconUrl: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png',
-    className: 'gmail-event-extractor-panel',
-    el: document.createElement('div'),
-    onClick: () => {
-      console.log('NavBar button clicked');
-      // אפשר להוסיף לוגיקה לפתיחת צד-בר או פעולה אחרת
-      services.uiService?.closeCurrentSidebar();
-      services.uiService?.showNotification('Gmail Event Extractor is ready!', { type: 'info' });
-    }
-  });
-  console.log('NavBar button added');
-
-}
 
 bootstrap().catch(error => {
   console.error('Fatal application error', error);

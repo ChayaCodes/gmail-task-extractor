@@ -9,7 +9,7 @@ const emptyEvent: Event = {
   title: '',
   description: '',
   startDateTime: new Date(),
-  endDateTime: new Date(new Date().getTime() + 60 * 60 * 1000), 
+  endDateTime: new Date(new Date().getTime() + 60 * 60 * 1000),
   location: '',
   status: 'suggested'
 };
@@ -28,7 +28,7 @@ export function EventSidebar({
   onClose: () => void;
 }) {
   const [activeEventIndex, setActiveEventIndex] = useState(0);
-  const [isAddMode, setIsAddMode] = useState(events.length === 0);
+  const isAddMode = events.length === 0;
   const [editedEvent, setEditedEvent] = useState<Event>(isAddMode ? { ...emptyEvent } : { ...events[0] });
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -53,7 +53,7 @@ export function EventSidebar({
   };
 
   function goToNextOrClose() {
-    if (events.length > 1 && activeEventIndex < events.length - 1) {
+    if (activeEventIndex < events.length - 1) {
       setActiveEventIndex(activeEventIndex + 1);
       setEditedEvent({ ...events[activeEventIndex + 1] });
     } else {
@@ -101,33 +101,35 @@ export function EventSidebar({
   return (
     <div className="event-sidebar">
       <div className="event-sidebar-header">
-        <h2>{`אירועים שזוהו (${events.length})`}</h2>
+        <h2>
+          {events.length > 0
+            ? `אירועים שזוהו (${events.length})`
+            : 'הוסף אירוע חדש'}
+        </h2>
         <button onClick={handleClose} className="close-button">×</button>
       </div>
 
-      {events.length > 0 && (
-        <>
-          {events.length > 1 && (
-            <div className="event-navigation">
-              <span>אירוע {activeEventIndex + 1} מתוך {events.length}</span>
-              <div className="navigation-buttons">
-                <button className="nav-button" onClick={handlePrevEvent} disabled={activeEventIndex === 0}>הקודם</button>
-                <button className="nav-button" onClick={handleNextEvent} disabled={activeEventIndex === events.length - 1}>הבא</button>
-              </div>
+      (
+      <>
+        {events.length > 1 && (
+          <div className="event-navigation">
+            <span>אירוע {activeEventIndex + 1} מתוך {events.length}</span>
+            <div className="navigation-buttons">
+              <button className="nav-button" onClick={handlePrevEvent} disabled={activeEventIndex === 0}>הקודם</button>
+              <button className="nav-button" onClick={handleNextEvent} disabled={activeEventIndex === events.length - 1}>הבא</button>
             </div>
-          )}
-          <EventForm event={editedEvent} onEventChange={setEditedEvent} />
-          <EventActions onApprove={handleApprove} onReject={handleReject} />
-
-          {/* הודעות שגיאה וטעינה בתחתית */}
-          <div >
-            {errorMsg && (
-              <div className="event-error-msg">{errorMsg}</div>
-            )}
-            {loading && <div className="loading-msg">מוסיף ליומן...</div>}
           </div>
-        </>
-      )}
+        )}
+
+        <EventForm event={editedEvent} onEventChange={setEditedEvent} />
+        <EventActions onApprove={handleApprove} onReject={handleReject} />
+        <div>
+          {errorMsg && <div className="event-error-msg">{errorMsg}</div>}
+          {loading && <div className="loading-msg">מוסיף ליומן...</div>}
+        </div>
+      </>
+
+      )
     </div>
   );
 }

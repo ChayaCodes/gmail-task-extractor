@@ -71,6 +71,39 @@ export class InboxSDKUIService {
       });
     }
   }
-}
 
-// filepath: d:\Users\user\projects\gmail-task-extractor\src\services\inboxSDK\inbox-sdk-ui.service.ts
+  public addSidebar(options: {
+    onEventUpdate: (event: Event) => void;
+    onEventApprove: (event: Event) => void;
+    onEventReject: (event: Event) => void;
+  },
+  open?: boolean
+): void {
+    const sidebarEl = document.createElement("div");
+    this.currentSidebarPanel = this.sdk.Global.addSidebarContentPanel({
+      el: sidebarEl,
+      title: "Events",
+      iconUrl: '/icon.png',
+      className: "event-sidebar-panel",
+      hideTitleBar: true,
+      visible: open ?? false
+    });
+
+    render(
+      h(EventSidebar, {
+        events: [],
+        onEventUpdate: options.onEventUpdate,
+        onEventApprove: options.onEventApprove,
+        onEventReject: options.onEventReject,
+        onClose: () => this.closeCurrentSidebar(),
+      }),
+      sidebarEl
+    );
+  }
+
+  public closeSidebar(): void {
+    if (this.currentSidebarPanel) {
+      this.currentSidebarPanel.close();
+    }
+  }
+}

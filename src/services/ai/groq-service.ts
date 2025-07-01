@@ -114,8 +114,8 @@ Return only events array in JSON format, do not include any additional text or e
       return events.map((event) => {
         const startDate = isValidDate(event.startDate) ? event.startDate : new Date().toISOString().split("T")[0];
         const endDate = isValidDate(event.endDate) ? event.endDate : startDate;
-        const startTime = isValidTime(event.startTime) ? event.startTime : "09:00";
-        const endTime = isValidTime(event.endTime) ? event.endTime : "10:00";
+        const startTime = isValidTime(event.startTime) ? event.startTime : "00:00";
+        const endTime = isValidTime(event.endTime) ? event.endTime : "00:00";
         return {
           title: event.title || "Untitled Event",
           description: event.description || "",

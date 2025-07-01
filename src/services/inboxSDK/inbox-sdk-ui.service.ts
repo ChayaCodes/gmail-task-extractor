@@ -79,6 +79,7 @@ export class InboxSDKUIService {
     onEventReject: (event: Event) => void;
   }): void {
     const sidebarEl = this.currentSidebarEl; 
+    this.currentSidebarPanel.open();
 
     if (this.currentSidebarPanel && sidebarEl) {
       render(

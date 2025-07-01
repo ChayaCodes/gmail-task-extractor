@@ -5,50 +5,20 @@ import * as InboxSDK from "@inboxsdk/core";
 
 export class InboxSDKUIService {
   private currentSidebarPanel: any = null;
+  private currentSidebarEl: HTMLElement | null = null;
   private sdk: any;
 
   constructor(inboxSdkService: any) {
     this.sdk = inboxSdkService.getSdk();
   }
 
-  public showEventSidebar(
-    events: Event[],
-    messageView: any,
-    options: {
-      onEventUpdate: (event: Event) => void;
-      onEventApprove: (event: Event) => void;
-      onEventReject: (event: Event) => void;
-    }
-  ): void {
-    this.closeCurrentSidebar();
 
-    const sidebarEl = document.createElement("div");
-
-    this.currentSidebarPanel = messageView.getThreadView().addSidebarContentPanel({
-      el: sidebarEl,
-      title: "",
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png',
-      className: "event-sidebar-panel",
-      hideTitleBar: true,
-
-    });
-
-    render(
-      h(EventSidebar, {
-        events: events,
-        onEventUpdate: options.onEventUpdate,
-        onEventApprove: options.onEventApprove,
-        onEventReject: options.onEventReject,
-        onClose: () => this.closeCurrentSidebar(),
-      }),
-      sidebarEl
-    );
-  }
-
-  public closeCurrentSidebar(): void {
-    if (this.currentSidebarPanel) {
-      this.currentSidebarPanel.remove();
-
+  //for tests
+  private showObjectMethods(obj: any): void {
+    if (obj) {
+      const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(obj))
+        .filter(prop => typeof obj[prop] === 'function');
+      console.log('Methods:', methods);
     }
   }
 
@@ -72,22 +42,24 @@ export class InboxSDKUIService {
     }
   }
 
-  public addSidebar(options: {
+  public async addSidebar(options: {
     onEventUpdate: (event: Event) => void;
     onEventApprove: (event: Event) => void;
     onEventReject: (event: Event) => void;
   },
   open?: boolean
-): void {
+  ): Promise<void> {
     const sidebarEl = document.createElement("div");
-    this.currentSidebarPanel = this.sdk.Global.addSidebarContentPanel({
+    this.currentSidebarEl = sidebarEl;
+    this.currentSidebarPanel = await this.sdk.Global.addSidebarContentPanel({
       el: sidebarEl,
       title: "Events",
-      iconUrl: '/icon.png',
+      iconUrl: '/public/icons/icon.png',
       className: "event-sidebar-panel",
       hideTitleBar: true,
       visible: open ?? false
-    });
+    })
+    console.log("Sidebar panel created", this.currentSidebarPanel);
 
     render(
       h(EventSidebar, {
@@ -95,10 +67,39 @@ export class InboxSDKUIService {
         onEventUpdate: options.onEventUpdate,
         onEventApprove: options.onEventApprove,
         onEventReject: options.onEventReject,
-        onClose: () => this.closeCurrentSidebar(),
+        onClose: () => this.closeSidebar(),
       }),
       sidebarEl
     );
+  }
+
+  public addEventsToSidebar(events: Event[], handlers: {
+    onEventUpdate: (event: Event) => void;
+    onEventApprove: (event: Event) => void;
+    onEventReject: (event: Event) => void;
+  }): void {
+    const sidebarEl = this.currentSidebarEl; 
+
+    if (this.currentSidebarPanel && sidebarEl) {
+      render(
+        h(EventSidebar, {
+          events,
+          onEventUpdate: handlers.onEventUpdate,
+          onEventApprove: handlers.onEventApprove,
+          onEventReject: handlers.onEventReject,
+          onClose: () => this.closeSidebar(),
+        }),
+        sidebarEl
+      );
+      console.log("Events added to sidebar", events);
+    }else {
+      if(!this.currentSidebarPanel) {
+        console.error("Cannot add events - sidebar panel not found");
+      }
+      if(!sidebarEl) {
+        console.error("Cannot add events - sidebar element not found");
+      }
+    }
   }
 
   public closeSidebar(): void {

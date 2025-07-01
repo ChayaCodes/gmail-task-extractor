@@ -73,7 +73,7 @@ async function handleEventApprove(event: Event): Promise<void> {
   console.log('Event approved:', event);
   try {
     const eventId = await services.calendar.addEvent(event);
-    services.uiService?.closeCurrentSidebar();
+    services.uiService?.closeSidebar();
     const eventLink = `https://calendar.google.com/event?eid=${eventId}`;
     showSuccessNotification(
       'האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.'
@@ -129,7 +129,7 @@ function showEventSidebar(events: Event[], messageView: any): void {
     console.error('Cannot show event sidebar - UI service not initialized');
     return;
   }
-  services.uiService.showEventSidebar(events, messageView, {
+  services.uiService.addEventsToSidebar(events, {
     onEventUpdate: handleEventUpdate,
     onEventApprove: handleEventApprove,
     onEventReject: handleEventReject

@@ -27,7 +27,6 @@
     "*://*.googleusercontent.com/*"
   ],
   "permissions": [
-    "storage",
     "scripting",
     "identity"
   ],
@@ -42,7 +41,6 @@
   "oauth2": {
     "client_id": "343026498715-99u83kov0hhv2olft8bfudeci7qqfg04.apps.googleusercontent.com",
     "scopes": [
-      "https://www.googleapis.com/auth/gmail.readonly",
       "https://www.googleapis.com/auth/calendar"
     ]
   }

@@ -34,7 +34,7 @@
     
   "web_accessible_resources": [
     {
-      "resources": ["*.js", "pageWorld.js", "*.html", "*.css", "*.json"],
+      "resources": ["*.js", "pageWorld.js", "*.html", "*.css", "*.json", "*.png"],
       "matches": ["*://mail.google.com/*", "*://*.googleusercontent.com/*"]
     }
   ],

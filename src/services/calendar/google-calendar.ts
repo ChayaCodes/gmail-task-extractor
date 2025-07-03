@@ -3,16 +3,10 @@ import { GoogleAuthService } from '../auth/oauth-service';
 import {Event} from '/src/types/event.types';
 
 export class GoogleCalendar implements CalendarService {
-    public oauthService: GoogleAuthService;
-    private apiKey: string;
 
-    constructor() {
-        this.oauthService = new GoogleAuthService();
-        this.apiKey = (this.oauthService as any).apiKey || process.env.GOOGLE_CREDENTIALS_API_KEY || '';
-    }
 
     async addEvent(event: Event): Promise<string> {
-        const token = await this.oauthService.getAuthToken();
+        const token = await GoogleAuthService.getAuthToken();
         // Convert Event fields to ISO strings for Google Calendar
         const startDateTime = event.startDateTime.toISOString();
         const endDateTime = event.endDateTime.toISOString();
@@ -32,7 +26,7 @@ export class GoogleCalendar implements CalendarService {
         };
 
         const response = await fetch(
-            `https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${this.apiKey}`,
+            `https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${GoogleAuthService.getApiKey()}`,
             {
                 method: 'POST',
                 headers: {

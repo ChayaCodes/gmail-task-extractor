@@ -1,17 +1,17 @@
 import { google } from "googleapis";
 
 export class GoogleAuthService {
-    private apiKey: string;
+    private static apiKey: string = process.env.GOOGLE_CREDENTIALS_API_KEY || '';
 
-    constructor() {
-        const apiKey = process.env.GOOGLE_CREDENTIALS_API_KEY;
-        if (!apiKey) {
-            throw new Error("Google API key is not set in environment variables");
+    public static getApiKey(): string {
+        if (!this.apiKey) {
+            throw new Error('Google API key is not set. Please set the GOOGLE_CREDENTIALS_API_KEY environment variable.');
         }
-        this.apiKey = apiKey;
+        return this.apiKey;
     }
 
-    public getAuthToken(interactive = true): Promise<string> {
+
+    public static getAuthToken(interactive = true): Promise<string> {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(
                 { type: 'GET_GOOGLE_AUTH_TOKEN', interactive },

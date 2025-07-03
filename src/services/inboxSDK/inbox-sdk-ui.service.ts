@@ -27,11 +27,12 @@ export class InboxSDKUIService {
     this.currentSidebarPanel = messageView.getThreadView().addSidebarContentPanel({
       el: sidebarEl,
       title: "",
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png',
+      iconUrl: chrome.runtime.getURL("icons/icon.png"),
       className: "event-sidebar-panel",
+      hideTitleBar: true,
 
     });
-
+    
     render(
       h(EventSidebar, {
         events: events,

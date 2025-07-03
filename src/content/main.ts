@@ -64,9 +64,19 @@ function showErrorNotification(message: string) {
 async function handleEventApprove(event: Event): Promise<void> {
   console.log('Event approved:', event);
   try {
+
+    event = {
+      ...event,
+      description:
+      event.description +
+      (event.mailLink ? `\n\n------------------\nקישור למייל המקורי:\n${event.mailLink}` : ''),
+    };
     const eventId = await services.calendar.addEvent(event);
     services.uiService?.closeCurrentSidebar();
-    showSuccessNotification('האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.');
+    const eventLink = `https://calendar.google.com/event?eid=${eventId}`;
+    showSuccessNotification(
+     'האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.'
+    );
     // אם תרצי להציג קישור, אפשר להוסיף אותו לטקסט בלבד:
     // showSuccessNotification(`האירוע נוסף בהצלחה! חפש אותו ביומן Google שלך (ID: ${eventId})`);
   } catch (error: any) {

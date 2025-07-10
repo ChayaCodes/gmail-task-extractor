@@ -81,19 +81,8 @@ export class InboxSDKUIService {
     onEventApprove: (event: Event) => void;
     onEventReject: (event: Event) => void;
   }): void {
-    // שמור את האירועים ו-handlers הנוכחיים
-    this.currentEvents = [...events];
-    this.currentHandlers = {
-      onEventUpdate: handlers.onEventUpdate,
-      onEventApprove: (event: Event) => {
-        handlers.onEventApprove(event);
-        this.removeEventFromSidebar(event);
-      },
-      onEventReject: (event: Event) => {
-        handlers.onEventReject(event);
-        this.removeEventFromSidebar(event);
-      }
-    };
+    // שמור את ה-handlers הנוכחיים (בלי לעטוף אותם)
+    this.currentHandlers = handlers;
 
     const sidebarEl = this.currentSidebarEl;
     if (this.currentSidebarPanel) {
@@ -101,7 +90,7 @@ export class InboxSDKUIService {
     }
 
     if (this.currentSidebarPanel && sidebarEl) {
-      this.renderSidebar();
+      this.renderSidebar(events);
       console.log("Events added to sidebar", events);
     } else {
       if (!this.currentSidebarPanel) {
@@ -113,38 +102,35 @@ export class InboxSDKUIService {
     }
   }
 
-  private removeEventFromSidebar(eventToRemove: Event): void {
-    // הסר את האירוע מהרשימה - השווה לפי תכונות ייחודיות במקום reference
-    const initialCount = this.currentEvents.length;
-    console.log("Before removal - events:", this.currentEvents.map(e => ({ title: e.title, time: e.startDateTime.getTime() })));
-    console.log("Removing event:", { title: eventToRemove.title, time: eventToRemove.startDateTime.getTime() });
-    
-    this.currentEvents = this.currentEvents.filter(event => 
-      !(event.title === eventToRemove.title && 
-        event.startDateTime.getTime() === eventToRemove.startDateTime.getTime() &&
-        event.location === eventToRemove.location)
-    );
-    
-    console.log("After removal - events:", this.currentEvents.map(e => ({ title: e.title, time: e.startDateTime.getTime() })));
-    console.log(`Events count: ${initialCount} -> ${this.currentEvents.length}`);
-    
-    // עדכן את התצוגה עם הרשימה החדשה לפני סגירת ה-sidebar
-    this.renderSidebar();
-    
-    // אם אין עוד אירועים, סגור את ה-sidebar אחרי דיליי קצר
-    if (this.currentEvents.length === 0) {
+  public updateSidebarWithEvents(events: Event[]): void {
+    if (events.length === 0) {
+      // אם אין עוד אירועים, הצג מצב ריק ואז סגור את ה-sidebar
+      this.showEmptyState();
       setTimeout(() => {
         this.closeSidebar();
-      }, 500); // דיליי של חצי שנייה כדי שהמשתמש יראה שהטופס התרוקן
-      return;
+      }, 500);
+    } else {
+      // עדכן את ה-sidebar עם הרשימה החדשה
+      this.updateEvents(events);
     }
   }
 
-  private renderSidebar(): void {
+  public updateEvents(events: Event[]): void {
+    console.log("Updating sidebar with new events:", events.length);
+    this.renderSidebar(events);
+  }
+
+  public showEmptyState(): void {
+    console.log("Showing empty state");
+    this.renderSidebar([]);
+  }
+
+  private renderSidebar(events?: Event[]): void {
     if (this.currentSidebarEl && this.currentHandlers) {
+      const eventsToRender = events || this.currentEvents;
       render(
         h(EventSidebar, {
-          events: this.currentEvents,
+          events: eventsToRender,
           onEventUpdate: this.currentHandlers.onEventUpdate,
           onEventApprove: this.currentHandlers.onEventApprove,
           onEventReject: this.currentHandlers.onEventReject,

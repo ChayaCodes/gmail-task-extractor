@@ -20,6 +20,10 @@ const services = {
   calendar: new GoogleCalendar()
 };
 
+// Global state for current events
+let currentEvents: Event[] = [];
+let currentMessageView: any = null;
+
 async function bootstrap(): Promise<void> {
   console.log('Gmail Event Extractor starting...');
   try {
@@ -66,10 +70,28 @@ function showErrorNotification(message: string) {
   services.uiService?.showNotification(message, { type: 'error', timeout: 7000 });
 }
 
+function removeEventFromCurrentList(eventToRemove: Event): void {
+  const initialCount = currentEvents.length;
+  console.log("Before removal - events:", currentEvents.map(e => ({ title: e.title, time: e.startDateTime.getTime() })));
+  console.log("Removing event:", { title: eventToRemove.title, time: eventToRemove.startDateTime.getTime() });
+  
+  // הסר את האירוע מהרשימה - השווה לפי תכונות ייחודיות
+  currentEvents = currentEvents.filter(event => 
+    !(event.title === eventToRemove.title && 
+      event.startDateTime.getTime() === eventToRemove.startDateTime.getTime() &&
+      event.location === eventToRemove.location)
+  );
+  
+  console.log("After removal - events:", currentEvents.map(e => ({ title: e.title, time: e.startDateTime.getTime() })));
+  console.log(`Events count: ${initialCount} -> ${currentEvents.length}`);
+  
+  // עדכן את ה-UI עם הרשימה החדשה
+  services.uiService?.updateSidebarWithEvents(currentEvents);
+}
+
 async function handleEventApprove(event: Event): Promise<void> {
   console.log('Event approved:', event);
   try {
-
     event = {
       ...event,
       description:
@@ -77,13 +99,13 @@ async function handleEventApprove(event: Event): Promise<void> {
       (event.mailLink ? `\n\n------------------\nקישור למייל המקורי:\n${event.mailLink}` : ''),
     };
     const eventId = await services.calendar.addEvent(event);
-    services.uiService?.closeSidebar();
-    const eventLink = `https://calendar.google.com/event?eid=${eventId}`;
+    
+    // הסר את האירוע מהרשימה הגלובלית
+    removeEventFromCurrentList(event);
+    
     showSuccessNotification(
       'האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.'
     );
-    // אם תרצי להציג קישור, אפשר להוסיף אותו לטקסט בלבד:
-    // showSuccessNotification(`האירוע נוסף בהצלחה! חפש אותו ביומן Google שלך (ID: ${eventId})`);
   } catch (error: any) {
     showErrorNotification('אירעה שגיאה בהוספת האירוע ליומן: ' + (error?.message || ''));
   }
@@ -133,6 +155,11 @@ function showEventSidebar(events: Event[], messageView: any): void {
     console.error('Cannot show event sidebar - UI service not initialized');
     return;
   }
+  
+  // שמור את האירועים והמסר בגלובל state
+  currentEvents = [...events];
+  currentMessageView = messageView;
+  
   services.uiService.addEventsToSidebar(events, {
     onEventUpdate: handleEventUpdate,
     onEventApprove: handleEventApprove,
@@ -146,7 +173,8 @@ function handleEventUpdate(event: Event): void {
 
 async function handleEventReject(event: Event): Promise<void> {
   console.log('Event rejected:', event);
-  // אפשר להוסיף לוגיקה אם צריך
+  // הסר את האירוע מהרשימה הגלובלית
+  removeEventFromCurrentList(event);
 }
 
 

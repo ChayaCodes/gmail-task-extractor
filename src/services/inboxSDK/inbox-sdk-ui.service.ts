@@ -52,7 +52,7 @@ export class InboxSDKUIService {
     this.currentSidebarPanel = await this.sdk.Global.addSidebarContentPanel({
       el: sidebarEl,
       title: "Events",
-      iconUrl: '/public/icons/icon.png',
+      iconUrl: chrome.runtime.getURL('icons/icon.png'),
       className: "event-sidebar-panel",
       hideTitleBar: true,
       visible: open ?? false

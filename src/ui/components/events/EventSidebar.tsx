@@ -101,12 +101,22 @@ export function EventSidebar({
 
   // עדכון אירוע ערוך כאשר האירועים משתנים
   useEffect(() => {
+    console.log("EventSidebar useEffect triggered. events.length:", events.length, "activeEventIndex:", activeEventIndex);
     if (events.length > 0) {
-      setEditedEvent({ ...events[activeEventIndex] });
+      // ודא שה-index לא מחוץ לטווח
+      const validIndex = Math.min(activeEventIndex, events.length - 1);
+      if (validIndex !== activeEventIndex) {
+        setActiveEventIndex(validIndex);
+      }
+      const newEvent = { ...events[validIndex] };
+      console.log("Setting editedEvent to:", newEvent.title);
+      setEditedEvent(newEvent);
     } else {
+      console.log("No events - setting empty event");
       setEditedEvent({ ...emptyEvent });
+      setActiveEventIndex(0);
     }
-  }, [events, activeEventIndex]);
+  }, [events.length, events, activeEventIndex]); // הוספת events.length כדי לכפות עדכון
 
   return (
     <div className="event-sidebar">

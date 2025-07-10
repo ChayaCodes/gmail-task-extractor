@@ -11,40 +11,7 @@ export class InboxSDKUIService {
   constructor(inboxSdkService: any) {
     this.sdk = inboxSdkService.getSdk();
   }
-
-  public showEventSidebar(
-    events: Event[],
-    messageView: any,
-    options: {
-      onEventUpdate: (event: Event) => void;
-      onEventApprove: (event: Event) => void;
-      onEventReject: (event: Event) => void;
-    }
-  ): void {
-    this.closeCurrentSidebar();
-
-    const sidebarEl = document.createElement("div");
-
-    this.currentSidebarPanel = messageView.getThreadView().addSidebarContentPanel({
-      el: sidebarEl,
-      title: "",
-      iconUrl: chrome.runtime.getURL("icons/icon.png"),
-      className: "event-sidebar-panel",
-      hideTitleBar: true,
-
-    });
-    
-    render(
-      h(EventSidebar, {
-        events: events,
-        onEventUpdate: options.onEventUpdate,
-        onEventApprove: options.onEventApprove,
-        onEventReject: options.onEventReject,
-        onClose: () => this.closeCurrentSidebar(),
-      }),
-      sidebarEl
-    );
-  }
+  
 
   public closeCurrentSidebar(): void {
     if (this.currentSidebarPanel) {
@@ -73,12 +40,12 @@ export class InboxSDKUIService {
     }
   }
 
-  public async addSidebar(options: {
+  public async initSidebar(options: {
     onEventUpdate: (event: Event) => void;
     onEventApprove: (event: Event) => void;
     onEventReject: (event: Event) => void;
   },
-  open?: boolean
+    open?: boolean
   ): Promise<void> {
     const sidebarEl = document.createElement("div");
     this.currentSidebarEl = sidebarEl;
@@ -108,8 +75,10 @@ export class InboxSDKUIService {
     onEventApprove: (event: Event) => void;
     onEventReject: (event: Event) => void;
   }): void {
-    const sidebarEl = this.currentSidebarEl; 
-    this.currentSidebarPanel.open();
+    const sidebarEl = this.currentSidebarEl;
+    if (this.currentSidebarPanel) {
+      this.currentSidebarPanel.open();
+    }
 
     if (this.currentSidebarPanel && sidebarEl) {
       render(
@@ -123,11 +92,11 @@ export class InboxSDKUIService {
         sidebarEl
       );
       console.log("Events added to sidebar", events);
-    }else {
-      if(!this.currentSidebarPanel) {
+    } else {
+      if (!this.currentSidebarPanel) {
         console.error("Cannot add events - sidebar panel not found");
       }
-      if(!sidebarEl) {
+      if (!sidebarEl) {
         console.error("Cannot add events - sidebar element not found");
       }
     }

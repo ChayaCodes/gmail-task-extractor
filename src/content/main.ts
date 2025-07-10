@@ -25,14 +25,11 @@ async function bootstrap(): Promise<void> {
   try {
     await initializeServices();
     registerEventHandlers();
-    services.uiService?.addSidebar({
+    services.uiService?.initSidebar({
       onEventUpdate: handleEventUpdate,
       onEventApprove: handleEventApprove,
       onEventReject: handleEventReject,
-    },
-      false
-
-    )
+    }, false);
   } catch (error) {
     console.error('Failed to initialize application', error);
   }

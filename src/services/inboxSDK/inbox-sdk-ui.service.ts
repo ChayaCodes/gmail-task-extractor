@@ -12,13 +12,44 @@ export class InboxSDKUIService {
     this.sdk = inboxSdkService.getSdk();
   }
 
+  public showEventSidebar(
+    events: Event[],
+    messageView: any,
+    options: {
+      onEventUpdate: (event: Event) => void;
+      onEventApprove: (event: Event) => void;
+      onEventReject: (event: Event) => void;
+    }
+  ): void {
+    this.closeCurrentSidebar();
 
-  //for tests
-  private showObjectMethods(obj: any): void {
-    if (obj) {
-      const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(obj))
-        .filter(prop => typeof obj[prop] === 'function');
-      console.log('Methods:', methods);
+    const sidebarEl = document.createElement("div");
+
+    this.currentSidebarPanel = messageView.getThreadView().addSidebarContentPanel({
+      el: sidebarEl,
+      title: "",
+      iconUrl: chrome.runtime.getURL("icons/icon.png"),
+      className: "event-sidebar-panel",
+      hideTitleBar: true,
+
+    });
+    
+    render(
+      h(EventSidebar, {
+        events: events,
+        onEventUpdate: options.onEventUpdate,
+        onEventApprove: options.onEventApprove,
+        onEventReject: options.onEventReject,
+        onClose: () => this.closeCurrentSidebar(),
+      }),
+      sidebarEl
+    );
+  }
+
+  public closeCurrentSidebar(): void {
+    if (this.currentSidebarPanel) {
+      this.currentSidebarPanel.remove();
+
     }
   }
 

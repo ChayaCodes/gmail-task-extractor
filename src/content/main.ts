@@ -72,6 +72,13 @@ function showErrorNotification(message: string) {
 async function handleEventApprove(event: Event): Promise<void> {
   console.log('Event approved:', event);
   try {
+
+    event = {
+      ...event,
+      description:
+      event.description +
+      (event.mailLink ? `\n\n------------------\nקישור למייל המקורי:\n${event.mailLink}` : ''),
+    };
     const eventId = await services.calendar.addEvent(event);
     services.uiService?.closeSidebar();
     const eventLink = `https://calendar.google.com/event?eid=${eventId}`;

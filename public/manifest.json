@@ -1,12 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Gmail Event Extractor",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Extract events from Gmail emails",
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "128": "icons/icon.png"
   },
   "action": {
     "default_title": "Gmail Event Extractor"
@@ -27,14 +25,13 @@
     "*://*.googleusercontent.com/*"
   ],
   "permissions": [
-    "storage",
     "scripting",
     "identity"
   ],
     
   "web_accessible_resources": [
     {
-      "resources": ["*.js", "pageWorld.js", "*.html", "*.css", "*.json"],
+      "resources": ["*.js", "pageWorld.js", "*.html", "*.css", "*.json", "*.png"],
       "matches": ["*://mail.google.com/*", "*://*.googleusercontent.com/*"]
     }
   ],
@@ -42,7 +39,6 @@
   "oauth2": {
     "client_id": "343026498715-99u83kov0hhv2olft8bfudeci7qqfg04.apps.googleusercontent.com",
     "scopes": [
-      "https://www.googleapis.com/auth/gmail.readonly",
       "https://www.googleapis.com/auth/calendar"
     ]
   }

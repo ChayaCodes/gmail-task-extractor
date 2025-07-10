@@ -12,8 +12,8 @@
     "test:integration": "jest --testPathPattern=tests/integration --runInBand",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "package": "npm run build && powershell -ExecutionPolicy Bypass -File .\\create-zip.ps1",
-    "package:win": "npm run build && powershell.exe -Command \"if (Test-Path 'dist.zip') { Remove-Item 'dist.zip' -Force }; Compress-Archive -Path 'dist/*' -DestinationPath 'dist.zip' -Force\""
+    "package": "npm run build && npm run zip",
+    "zip": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command \"Compress-Archive -Path 'dist\\*' -DestinationPath 'dist.zip' -Force\""
   },
   "dependencies": {
     "@inboxsdk/core": "^2.2.4",
@@ -49,6 +49,6 @@
     "calendar",
     "ai"
   ],
-  "author": "Your Name",
+  "author": "Chaya Kremer",
   "license": "MIT"
 }

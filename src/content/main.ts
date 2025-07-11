@@ -2,6 +2,7 @@ import * as InboxSDK from '@inboxsdk/core';
 import { InboxSDKService } from '/src/services/inboxSDK/inbox-sdk.service';
 import { GroqService } from '/src/services/ai/groq-service';
 import { InboxSDKUIService } from '/src/services/inboxSDK/inbox-sdk-ui.service';
+import { DatasetService } from '/src/services/dataset/dataset.service';
 import { EmailDetails } from '/src/types/email.types';
 import { Event } from '/src/types/event.types';
 import { GoogleCalendar } from '/src/services/calendar/google-calendar';
@@ -17,12 +18,14 @@ const services = {
   inboxSDK: null as InboxSDKService | null,
   groq: null as GroqService | null,
   uiService: null as InboxSDKUIService | null,
-  calendar: new GoogleCalendar()
+  calendar: new GoogleCalendar(),
+  dataset: new DatasetService()
 };
 
 // Global state for current events
 let currentEvents: Event[] = [];
 let currentMessageView: any = null;
+let currentEmailDetails: EmailDetails | null = null;
 
 async function bootstrap(): Promise<void> {
   console.log('Gmail Event Extractor starting...');
@@ -44,6 +47,10 @@ async function initializeServices(): Promise<void> {
   await services.inboxSDK.initialize();
   services.groq = new GroqService();
   services.uiService = new InboxSDKUIService(services.inboxSDK);
+  
+  // Initialize dataset service
+  await services.dataset.initialize();
+  console.log('Dataset service initialized');
 }
 
 function registerEventHandlers(): void {
@@ -103,6 +110,12 @@ async function handleEventApprove(event: Event): Promise<void> {
     // הסר את האירוע מהרשימה הגלובלית
     removeEventFromCurrentList(event);
     
+    // Save to dataset for model training
+    if (currentEmailDetails) {
+      await services.dataset.saveApprovedEvent(currentEmailDetails, event);
+      console.log('Dataset entry saved for approved event');
+    }
+    
     showSuccessNotification(
       'האירוע נוסף בהצלחה! ניתן לראות אותו ביומן Google שלך.'
     );
@@ -133,6 +146,11 @@ function handleExtractedEvents(events: Event[], emailDetails: EmailDetails, mess
     console.log(`No events found in email: ${emailDetails.subject}`);
     return;
   }
+  
+  // Store current email details for dataset collection
+  currentEmailDetails = emailDetails;
+  currentMessageView = messageView;
+  
   const threadId = messageView?.getThreadView()?.getThreadID();
   const mailLink = threadId ? `https://mail.google.com/mail/u/0/#inbox/${threadId}` : '';
   console.log(`Found ${events.length} events in email: ${emailDetails.subject}`);
@@ -173,6 +191,13 @@ function handleEventUpdate(event: Event): void {
 
 async function handleEventReject(event: Event): Promise<void> {
   console.log('Event rejected:', event);
+  
+  // Save to dataset for model training
+  if (currentEmailDetails) {
+    await services.dataset.saveRejectedEvent(currentEmailDetails, event);
+    console.log('Dataset entry saved for rejected event');
+  }
+  
   // הסר את האירוע מהרשימה הגלובלית
   removeEventFromCurrentList(event);
 }

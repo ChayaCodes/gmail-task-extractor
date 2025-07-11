@@ -223,12 +223,22 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📸 Screenshots
+## 📸 Screenshots & Demo
+
+### 🎥 Live Demo
+
+Watch the extension in action:
+
+[![Gmail Event Extractor Demo](https://img.youtube.com/vi/Oq71xuSRQhk/0.jpg)](https://www.youtube.com/watch?v=Oq71xuSRQhk)
+
+Click the image above to watch a full demonstration of the Gmail Event Extractor in use.
 
 ### Gmail sidebar with detected events
+
 ![Gmail Integration](./screenshots/gmail.png)
 
 ### Event added to Google Calendar
+
 ![Calendar Integration](./screenshots/calendar.png)
 
 ---

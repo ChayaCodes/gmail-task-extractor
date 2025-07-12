@@ -4,73 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gmail Event Extractor</title>
-    <style>
-        body {
-            width: 350px;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-        }
-        .stats {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 5px 0;
-        }
-        button {
-            background: #1a73e8;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-            width: 100%;
-        }
-        button:hover {
-            background: #1557b0;
-        }
-        button.danger {
-            background: #d73027;
-        }
-        button.danger:hover {
-            background: #b71c1c;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Gmail Event Extractor</h1>
-        <p>התוסף פועל ברקע ומזהה אירועים באימיילים שלך.</p>
-        
-        <div class="stats">
-            <h3>סטטיסטיקות Dataset:</h3>
-            <div class="stat-item">
-                <span>סך הכל רשומות:</span>
-                <span id="totalEntries">0</span>
-            </div>
-            <div class="stat-item">
-                <span>אירועים שאושרו:</span>
-                <span id="approvedEntries">0</span>
-            </div>
-            <div class="stat-item">
-                <span>אירועים שנדחו:</span>
-                <span id="rejectedEntries">0</span>
-            </div>
-            <div class="stat-item">
-                <span>עדכון אחרון:</span>
-                <span id="lastUpdated">-</span>
-            </div>
-        </div>
-        
-        <button id="exportBtn">📁 הורדת Dataset</button>
-        <button id="copyBtn">📋 העתקה ללוח</button>
-        <button id="clearBtn" class="danger">🗑️ מחיקת Dataset</button>
-    </div>
-    <script src="popup.js"></script>
+    <div id="root"></div>
+    <script src="popup.bundle.js"></script>
 </body>
 </html>

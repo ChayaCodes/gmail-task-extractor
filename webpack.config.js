@@ -8,6 +8,7 @@ module.exports = {
     entry: {
         background: './src/background/background.ts',
         content: './src/content/main.ts',
+        popup: './src/popup/PopupApp.tsx',
     },
     output: {
         filename: '[name].bundle.js',
@@ -37,9 +38,7 @@ module.exports = {
                 use: {
                     loader: 'ts-loader',
                     options: {
-                        compilerOptions: {
-                            target: "es2015"
-                        }
+                        transpileOnly: true
                     }
                 },
                 exclude: /node_modules/,
@@ -53,7 +52,13 @@ module.exports = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: 'public', to: '' },
+                { 
+                    from: 'public', 
+                    to: '',
+                    globOptions: {
+                        ignore: ['**/popup.js'] // Don't copy the old popup.js
+                    }
+                },
                 { from: 'node_modules/@inboxsdk/core/pageWorld.js', to: 'pageWorld.js' }
             ],
         }),

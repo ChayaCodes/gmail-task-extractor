@@ -8,12 +8,15 @@
     "jsxFragmentFactory": "Fragment",
     "strict": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "/src/*": ["src/*"]
-    }
+    },
+    "lib": ["DOM", "DOM.Iterable", "ES6"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -7,7 +7,7 @@ import { EmailDetails } from '/src/types/email.types';
 import { Event } from '/src/types/event.types';
 import { GoogleCalendar } from '/src/services/calendar/google-calendar';
 
-// Application configuration
+// ApplicationF configuration
 const CONFIG = {
   appId: process.env.INBOX_SDK_APP_ID || 'your-app-id',
   enableDebugMode: true,
